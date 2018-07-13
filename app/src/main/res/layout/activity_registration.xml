@@ -5,80 +5,90 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/holo_orange_dark"
-    tools:context=".Registration">
+    tools:context=".activities.Registration">
+
+    <EditText
+        android:id="@+id/zipcode"
+        style="@style/editTextStandard"
+        android:layout_width="109dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginStart="8dp"
+        android:hint="ZIP"
+        android:inputType="phone"
+        android:padding="10dp"
+        android:paddingLeft="80dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/city"
+        tools:layout_editor_absoluteY="386dp" />
+
+    <EditText
+        android:id="@+id/password"
+        style="@style/editTextStandard"
+        android:layout_width="327dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginStart="40dp"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:paddingLeft="80dp"
+        app:layout_constraintBottom_toTopOf="@+id/signUpButton"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/address"
-        android:layout_width="327dp"
+        style="@style/editTextStandard"
+        android:layout_width="219dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginStart="64dp"
-        android:background="@drawable/reg_white_box"
-        android:ems="10"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="40dp"
         android:hint="Home Address"
-        android:paddingLeft="80dp"
-        android:gravity="center_vertical"
-        android:textSize="14dp"
-        android:textColorHint="#000000"
         android:inputType="textPostalAddress"
-        app:layout_constraintBottom_toTopOf="@+id/signUpButton"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingLeft="80dp"
+        app:layout_constraintBottom_toTopOf="@+id/city"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/mobile"
-        android:layout_width="327dp"
+        style="@style/editTextStandard"
+        android:layout_width="204dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginStart="64dp"
-        android:background="@drawable/reg_white_box"
-        android:ems="10"
+        android:layout_marginEnd="40dp"
         android:hint="Mobile"
-        android:paddingLeft="80dp"
-        android:gravity="center_vertical"
-        android:textSize='14dp'
-        android:textColorHint="#000000"
         android:inputType="phone"
+        android:paddingLeft="80dp"
         app:layout_constraintBottom_toTopOf="@+id/carrier"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/countryCode" />
 
     <EditText
         android:id="@+id/dname"
+        style="@style/editTextStandard"
         android:layout_width="327dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginStart="64dp"
-        android:background="@drawable/reg_white_box"
-        android:ems="10"
+        android:layout_marginEnd="40dp"
+        android:layout_marginStart="40dp"
         android:hint="Display Name"
-        android:paddingLeft="80dp"
-        android:gravity="center_vertical"
-        android:textSize='14dp'
-        android:textColorHint="#000000"
         android:inputType="textPersonName"
+        android:paddingLeft="80dp"
         app:layout_constraintBottom_toTopOf="@+id/mobile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/carrier"
+        style="@style/editTextStandard"
         android:layout_width="327dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginStart="64dp"
-        android:background="@drawable/reg_white_box"
-        android:ems="10"
+        android:layout_marginEnd="40dp"
+        android:layout_marginStart="40dp"
         android:hint="Carrier"
-        android:paddingLeft="80dp"
-        android:gravity="center_vertical"
-        android:textSize='14dp'
-        android:textColorHint="#000000"
         android:inputType="textPersonName"
+        android:paddingLeft="80dp"
         app:layout_constraintBottom_toTopOf="@+id/address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -87,13 +97,15 @@
         android:id="@+id/headline"
         android:layout_width="177dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="52dp"
         android:layout_marginStart="52dp"
-        android:layout_marginTop="38dp"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
         android:padding="10dp"
         android:text="Register"
-        android:gravity="center"
         android:textSize="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -102,34 +114,76 @@
         android:id="@+id/signUpButton"
         android:layout_width="327dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="176dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginStart="64dp"
+        android:layout_marginBottom="84dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginStart="40dp"
         android:background="@drawable/button_standard"
-        android:text="Sign Up"
-        android:textSize="24dp"
         android:gravity="center"
+        android:text="Sign Up"
         android:textAllCaps="false"
+        android:textSize="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/email"
+        style="@style/editTextStandard"
         android:layout_width="327dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginStart="64dp"
-        android:background="@drawable/reg_white_box"
-        android:ems="10"
+        android:layout_marginEnd="40dp"
+        android:layout_marginStart="40dp"
         android:hint="Email"
-        android:paddingLeft="80dp"
-        android:gravity="center_vertical"
-        android:textSize='14dp'
-        android:textColorHint="#000000"
         android:inputType="textEmailAddress"
+        android:paddingLeft="80dp"
         app:layout_constraintBottom_toTopOf="@+id/dname"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.hbb20.CountryCodePicker
+        android:id="@+id/countryCode"
+        style="@style/editTextStandard"
+        android:layout_width="115dp"
+        android:layout_height="49dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/carrier"
+        app:layout_constraintEnd_toStartOf="@+id/mobile"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ListView
+        android:id="@+id/country"
+        style="@style/editTextStandard"
+        android:layout_width="99dp"
+        android:layout_height="51dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/city"
+        app:layout_constraintStart_toEndOf="@+id/address"
+        app:layout_constraintTop_toBottomOf="@+id/carrier" />
+
+    <Spinner
+        android:id="@+id/city"
+        style="@style/editTextStandard"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/password"
+        app:layout_constraintStart_toEndOf="@+id/state" />
+
+    <Spinner
+        android:id="@+id/state"
+        style="@style/editTextStandard"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/address" />
+
 </android.support.constraint.ConstraintLayout>

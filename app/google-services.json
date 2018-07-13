@@ -1,10 +1,42 @@
 {
   "project_info": {
-    "project_number": "781593170863",
-    "firebase_url": "https://hackathonframework-65220.firebaseio.com",
-    "project_id": "hackathonframework-65220",
-    "storage_bucket": "hackathonframework-65220.appspot.com"
+    "project_number": "259828912993",
+    "firebase_url": "https://hackathonframework.firebaseio.com",
+    "project_id": "hackathonframework",
+    "storage_bucket": "hackathonframework.appspot.com"
   },
-  "client": [],
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259828912993:android:38bdf8a676459f96",
+        "android_client_info": {
+          "package_name": "com.example.silc.hackathonframework"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "259828912993-6dsg36mmur9d9a2dbjq3i0od9es0ssje.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXaMXstRzK9V20NBPKNrFZ9v3WBFL1EFM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
   "configuration_version": "1"
 }
