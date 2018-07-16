@@ -164,27 +164,33 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:hint="Country"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/city"
         app:layout_constraintStart_toEndOf="@+id/address"
         app:layout_constraintTop_toBottomOf="@+id/carrier" />
 
-    <Spinner
+    <TextView
         android:id="@+id/city"
         style="@style/editTextStandard"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
+        android:hint="City"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/password"
         app:layout_constraintStart_toEndOf="@+id/state" />
 
-    <Spinner
+    <TextView
         android:id="@+id/state"
         style="@style/editTextStandard"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginStart="42dp"
         android:layout_marginTop="8dp"
+        android:hint="State"
+        android:padding="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/address" />
 

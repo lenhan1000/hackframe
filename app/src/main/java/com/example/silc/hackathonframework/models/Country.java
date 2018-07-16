@@ -4,24 +4,23 @@ import org.json.*;
 import java.util.ArrayList;
 
 public class Country {
-    String id;
+    int id;
     String name;
     String sortname;
 
     public Country(JSONObject c){
         try {
-            this.id = c.getString("id");
+            this.id = Integer.parseInt(c.getString("id"));
             this.name = c.getString("name");
             this.sortname = c.getString("sortname");
         }catch (JSONException e){
         }
     }
 
-    public static ArrayList<String> listCountry(ArrayList<Country> list){
+    public static ArrayList<String> toArrayStrings(ArrayList<Country> list){
         ArrayList<String> result = new ArrayList<String>();
-        for (int i = 0;i<list.size(); i++){
+        for (int i = 0;i<list.size(); i++)
             result.add(list.get(i).name);
-        }
         return result;
     }
 
