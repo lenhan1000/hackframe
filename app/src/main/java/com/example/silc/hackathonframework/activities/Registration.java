@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.hbb20.CountryCodePicker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,6 +48,7 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
     private EditText mCarrierField;
     private EditText mAddressField;
     private EditText mZipCodeField;
+    private CountryCodePicker mCountryCode;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -66,6 +68,7 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
 
 
         //Views
+        mCountryCode = findViewById(R.id.countryCode);
         mEmailField = findViewById(R.id.email);
         mPasswordField = findViewById(R.id.password);
         mDisplayNameField = findViewById(R.id.dname);
@@ -98,7 +101,7 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+                            // Sign in success, update UI with the signed-in ic_user_black_24dp's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser userauth = mAuth.getCurrentUser();
                             User user = new User(mDisplayNameField.getText().toString(),
@@ -108,7 +111,8 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
                                     mAddressField.getText().toString(),
                                     mCountryList.getText().toString(),
                                     mStateList.getText().toString(),
-                                    mCityList.getText().toString()
+                                    mCityList.getText().toString(),
+                                    mCountryCode.getSelectedCountryCode().toString()
                                     );
                             mDatabase = FirebaseDatabase.getInstance().getReference("Users");
                             mDatabase.child(userauth.getUid()).setValue(user);
@@ -116,7 +120,7 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
                             Intent intent = new Intent(getApplicationContext(), Dashboard.class);
                             startActivity(intent);
                         } else {
-                            // If sign in fails, display a message to the user.
+                            // If sign in fails, display a message to the ic_user_black_24dp.
                             try {
                                 throw task.getException();
                             }catch (FirebaseAuthWeakPasswordException e){
@@ -168,7 +172,7 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
         }
 
         String mobile = mMobileField.getText().toString();
-        if (TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(mobile)) {
             mMobileField.setError("Required.");
             valid = false;
         } else {
@@ -176,7 +180,7 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
         }
 
         String carrier = mCarrierField.getText().toString();
-        if (TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(carrier)) {
             mCarrierField.setError("Required.");
             valid = false;
         } else {
@@ -184,6 +188,16 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
         }
 
         return valid;
+
+//        String countryCode = mCountryCode.getSelectedCountryCode().toString();
+//        if (TextUtils.isEmpty(password)) {
+//            mCarrierField.setError("Required.");
+//            valid = false;
+//        } else {
+//            mCarrierField.setError(null);
+//        }
+//
+//        return valid;
     }
 
     @Override

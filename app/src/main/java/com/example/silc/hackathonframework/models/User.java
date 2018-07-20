@@ -12,10 +12,12 @@ public class User {
     public String state;
     public String city;
     public String zipCode;
+    public String countryCode;
 
     public User(){}
     public User(String displayName, String mPhone, String carrier, String zipCode,
-                String address, String country, String state, String city){
+                String address, String country, String state, String city,
+                String countryCode){
         this.displayName = displayName;
         this.mPhone = mPhone;
         this.carrier = carrier;
@@ -24,6 +26,7 @@ public class User {
         this.state = state;
         this.city = city;
         this.zipCode = zipCode;
+        this.countryCode = countryCode;
     }
 
 }
