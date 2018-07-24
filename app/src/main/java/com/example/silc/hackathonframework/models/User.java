@@ -1,20 +1,46 @@
 package com.example.silc.hackathonframework.models;
 
+import android.os.Parcelable;
+import android.os.Parcel;
+
 import com.google.firebase.database.IgnoreExtraProperties;
 
-@IgnoreExtraProperties
-public class User {
-    private String displayName = null;
-    private String mPhone= null;
-    private String carrier= null;
-    private String address= null;
-    private String country= null;
-    private String state= null;
-    private String city= null;
-    public String zipCode= null;
-    public String countryCode= null;
+import java.io.Serializable;
 
-    public User(){}
+@IgnoreExtraProperties
+public class User implements Parcelable{
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    private String displayName;
+    private String mPhone;
+    private String carrier;
+    private String address;
+    private String country;
+    private String state;
+    private String city;
+    public String zipCode;
+    public String countryCode;
+
+    public User(){
+        displayName= null;
+        mPhone= null;
+        carrier= null;
+        address= null;
+        country= null;
+        state= null;
+        city= null;
+        zipCode= null;
+        countryCode= null;
+    }
     public User(String displayName, String mPhone, String carrier, String zipCode,
                 String address, String country, String state, String city,
                 String countryCode){
@@ -64,4 +90,47 @@ public class User {
     public void setZipCode(String arg){  this.zipCode = arg; }
 
     public void setCountryCode(String arg){  this.zipCode = arg; }
+
+    //Parcelling
+    public User(Parcel in){
+        this.displayName = in.readString();
+        this.mPhone = in.readString();
+        this.carrier = in.readString();
+        this.address = in.readString();
+        this.country = in.readString();
+        this.state = in.readString();
+        this.city = in.readString();
+        this.zipCode = in.readString();
+        this.countryCode = in.readString();
+    }
+
+    @Override
+    public int describeContents(){ return 0;}
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags){
+        dest.writeString(this.displayName);
+        dest.writeString(this.mPhone);
+        dest.writeString(this.carrier);
+        dest.writeString(this.address);
+        dest.writeString(this.countryCode);
+        dest.writeString(this.country);
+        dest.writeString(this.state);
+        dest.writeString(this.city);
+        dest.writeString(this.zipCode);
+    }
+
+    public String toString(){
+        return "Student{" +
+                "displayName='" + displayName + '\'' +
+                ", countryCode='" + countryCode + '\'' +
+                ", mPhone='" + mPhone + '\'' +
+                ", carrier='" + carrier + '\'' +
+                ", address='" + address + '\'' +
+                ", country='" + country + '\'' +
+                ", state='" + state + '\'' +
+                ", city='" + city + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                '}';
+    }
 }

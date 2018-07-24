@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.example.silc.hackathonframework.R;
 import com.example.silc.hackathonframework.fragments.RegistrationAddress;
 import com.example.silc.hackathonframework.fragments.RegistrationBasic;
+import com.example.silc.hackathonframework.fragments.RegistrationCred;
 import com.example.silc.hackathonframework.fragments.SingleChoiceDialogFragment;
 import com.example.silc.hackathonframework.helpers.Utils;
 import com.example.silc.hackathonframework.models.*;
@@ -35,41 +36,39 @@ import com.hbb20.CountryCodePicker;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Registration extends AppCompatActivity implements SingleChoiceDialogFragment.NoticeDialogListener, View.OnClickListener ,
+public class Registration extends AppCompatActivity implements
         RegistrationBasic.OnFragmentInteractionListener, RegistrationAddress.OnFragmentInteractionListener{
     private static final String TAG = "Registration";
-    private int dialog_id;
-    private int country_id;
-    private int state_id;
     private User user;
-    private ArrayList<State> states;
 
     private EditText mEmailField;
     private EditText mPasswordField;
     private EditText mDisplayNameField;
     private EditText mMobileField;
     private EditText mCarrierField;
-    private EditText mAddressField;
-    private EditText mZipCodeField;
     private CountryCodePicker mCountryCode;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
-    private TextView mCountryList;
-    private TextView mStateList;
-    private TextView mCityList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        RegistrationBasic fragmentBasic = new RegistrationBasic();
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment, fragmentBasic).commit();
-//        //Variables
+
+        user = new User();
+
+        RegistrationBasic fragmentBasic = RegistrationBasic.newInstance(this.user);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment, fragmentBasic)
+                .commit();
+        //Variables
+
 //        country_id = 0;
 //        state_id = 0;
 //
@@ -103,51 +102,51 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
         }
 
         // [START create_user_with_email]
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in ic_user_black_24dp's information
-                            Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser userauth = mAuth.getCurrentUser();
-                            User user = new User(mDisplayNameField.getText().toString(),
-                                    mMobileField.getText().toString(),
-                                    mCarrierField.getText().toString(),
-                                    mZipCodeField.getText().toString(),
-                                    mAddressField.getText().toString(),
-                                    mCountryList.getText().toString(),
-                                    mStateList.getText().toString(),
-                                    mCityList.getText().toString(),
-                                    mCountryCode.getSelectedCountryCode().toString()
-                                    );
-                            mDatabase = FirebaseDatabase.getInstance().getReference("Users");
-                            mDatabase.child(userauth.getUid()).setValue(user);
-
-                            Intent intent = new Intent(getApplicationContext(), Dashboard.class);
-                            startActivity(intent);
-                        } else {
-                            // If sign in fails, display a message to the ic_user_black_24dp.
-                            try {
-                                throw task.getException();
-                            }catch (FirebaseAuthWeakPasswordException e){
-                                Toast.makeText(Registration.this, "Weak Password",
-                                        Toast.LENGTH_SHORT).show();
-                            }catch(FirebaseAuthInvalidCredentialsException e){
-                                Toast.makeText(Registration.this, "Invalid Email",
-                                        Toast.LENGTH_SHORT).show();
-                            }catch(FirebaseAuthUserCollisionException e){
-                                Toast.makeText(Registration.this, "Email already used",
-                                        Toast.LENGTH_SHORT).show();
-                            }catch(Exception e){
-                                Log.e(TAG, e.getMessage());
-                            }
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-
-                        }
-
-                    }
-                });
+//        mAuth.createUserWithEmailAndPassword(email, password)
+//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+//                            // Sign in success, update UI with the signed-in ic_user_black_24dp's information
+//                            Log.d(TAG, "createUserWithEmail:success");
+//                            FirebaseUser userauth = mAuth.getCurrentUser();
+//                            User user = new User(mDisplayNameField.getText().toString(),
+//                                    mMobileField.getText().toString(),
+//                                    mCarrierField.getText().toString(),
+//                                    mZipCodeField.getText().toString(),
+//                                    mAddressField.getText().toString(),
+//                                    mCountryList.getText().toString(),
+//                                    mStateList.getText().toString(),
+//                                    mCityList.getText().toString(),
+//                                    mCountryCode.getSelectedCountryCode().toString()
+//                                    );
+//                            mDatabase = FirebaseDatabase.getInstance().getReference("Users");
+//                            mDatabase.child(userauth.getUid()).setValue(user);
+//
+//                            Intent intent = new Intent(getApplicationContext(), Dashboard.class);
+//                            startActivity(intent);
+//                        } else {
+//                            // If sign in fails, display a message to the ic_user_black_24dp.
+//                            try {
+//                                throw task.getException();
+//                            }catch (FirebaseAuthWeakPasswordException e){
+//                                Toast.makeText(Registration.this, "Weak Password",
+//                                        Toast.LENGTH_SHORT).show();
+//                            }catch(FirebaseAuthInvalidCredentialsException e){
+//                                Toast.makeText(Registration.this, "Invalid Email",
+//                                        Toast.LENGTH_SHORT).show();
+//                            }catch(FirebaseAuthUserCollisionException e){
+//                                Toast.makeText(Registration.this, "Email already used",
+//                                        Toast.LENGTH_SHORT).show();
+//                            }catch(Exception e){
+//                                Log.e(TAG, e.getMessage());
+//                            }
+//                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+//
+//                        }
+//
+//                    }
+//                });
         // [END create_user_with_email]
     }
 
@@ -207,117 +206,27 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
 //        return valid;
     }
 
-    @Override
-    public void onClick(View v){
-        int i = v.getId();
-        if (i == R.id.signUpButton){
-            createAccount(mEmailField.getText().toString(),mPasswordField.getText().toString());
-        }
-        if (i == R.id.country){
-            dialog_id = R.id.country;
-            pop_country_dialog();
 
-        }if (i == R.id.state) {
-            dialog_id = R.id.state;
-            if (country_id > 0)
-                pop_state_dialog(country_id);
-            else
-                Toast.makeText(Registration.this, "Select Country First",
-                        Toast.LENGTH_SHORT).show();
-        }if (i == R.id.city) {
-            dialog_id = R.id.city;
-            if(state_id > 0 || country_id > 0)
-                pop_city_dialog(state_id);
-            else
-                Toast.makeText(Registration.this, "Select Country or State First",
-                        Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onDialogTextSelect(int id, String dialog){
-        if (dialog_id == R.id.country){
-            mCountryList.setText(dialog);
-            country_id = id + 1;
-            Log.d(TAG, "Country ID: " + Integer.toString(country_id));
-        }else if (dialog_id == R.id.state){
-            mStateList.setText(dialog);
-            state_id = State.stateId(states, dialog);
-            Log.d(TAG, "State ID: " + Integer.toString(state_id));
-        }else if (dialog_id == R.id.city){
-            mCityList.setText(dialog);
-        }
-    }
 
     @Override
     public void onFragmentInteraction(String id, User user){
         this.user = user;
         if (id == "RegistrationBasic"){
-            RegistrationAddress fragmentBasic = new RegistrationAddress();
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment, fragmentBasic).commit();
+            RegistrationAddress fragmentBasic = RegistrationAddress.newInstance(this.user);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(getSupportFragmentManager().findFragmentById(R.id.fragment))
+                    .add(R.id.fragment, fragmentBasic)
+                    .commit();
+        } else if(id == "RegistrationAddress"){
+            RegistrationAddress fragmentBasic = RegistrationAddress.newInstance(this.user);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(getSupportFragmentManager().findFragmentById(R.id.fragment))
+                    .add(R.id.fragment, fragmentBasic)
+                    .commit();
         }
     }
 
-    private void pop_country_dialog(){
-        ArrayList<Country> countries = null;
-        String jsonStr = Utils.loadJSONFromAsset(this, "countries.json");
-        try {
-            countries = Country.jsonToCountry(Utils
-                    .getArrayListFromJSONArray(new JSONObject(jsonStr)
-                            .getJSONArray("countries")));
-        } catch (JSONException e) {
-            Log.e(TAG, "Json parsing error: " + e.getMessage());
-        }
-        ArrayList<String> countries_name = Country.toArrayStrings(countries);
-        SingleChoiceDialogFragment dialog = new SingleChoiceDialogFragment();
-        Bundle data = new Bundle();
-        data.putStringArrayList("list", countries_name);
-        data.putString("title", "Select a Country");
-        dialog.setArguments(data);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        dialog.show(ft,null);
-    }
 
-    private void pop_state_dialog(int cid){
-        String jsonStr = Utils.loadJSONFromAsset(this, "states.json");
-        try {
-            states = State.jsonToState(Utils
-                    .getArrayListFromJSONArray(new JSONObject(jsonStr)
-                            .getJSONArray("states")));
-        } catch (JSONException e) {
-            Log.e(TAG, "Json parsing error: " + e.getMessage());
-            return;
-        }
-        states = State.countryToStates(states, cid);
-        ArrayList<String> states_name = State.toArrayStrings(states);
-        SingleChoiceDialogFragment dialog = new SingleChoiceDialogFragment();
-        Bundle data = new Bundle();
-        data.putStringArrayList("list", states_name);
-        data.putString("title", "Select a State/Region");
-        dialog.setArguments(data);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        dialog.show(ft,null);
-    }
-
-    private void pop_city_dialog(int sid){
-        ArrayList<City> cities;
-        String jsonStr = Utils.loadJSONFromAsset(this, "cities.json");
-        try {
-            cities = City.jsonToCity(Utils
-                    .getArrayListFromJSONArray(new JSONObject(jsonStr)
-                            .getJSONArray("cities")));
-        } catch (JSONException e) {
-            Log.e(TAG, "Json parsing error: " + e.getMessage());
-            return;
-        }
-        cities = City.stateToCities(cities, sid);
-        ArrayList<String> cities_name = City.toArrayStrings(cities);
-        SingleChoiceDialogFragment dialog = new SingleChoiceDialogFragment();
-        Bundle data = new Bundle();
-        data.putStringArrayList("list", cities_name);
-        data.putString("title", "Select a City");
-        dialog.setArguments(data);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        dialog.show(ft,null);
-    }
 }

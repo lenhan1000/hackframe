@@ -3,6 +3,7 @@ package com.example.silc.hackathonframework.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -27,10 +28,17 @@ import com.hbb20.CountryCodePicker;
  */
 public class RegistrationBasic extends Fragment {
     private static final String TAG = "RegistrationBasic";
+    private static final boolean DEBUG = true;
+
+    private User user;
+
     private EditText mDisplayNameField;
     private EditText mMobileField;
     private EditText mCarrierField;
     private CountryCodePicker mCountryCodeField;
+
+    // the fragment initialization parameters
+    private static final String ARG_USER = "User";
 
     private OnFragmentInteractionListener mListener;
 
@@ -38,9 +46,17 @@ public class RegistrationBasic extends Fragment {
         // Required empty public constructor
     }
 
-    public static RegistrationBasic newInstance() {
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param user Parameter 1.
+     * @return A new instance of fragment RegistrationBasic.
+     */
+    public static RegistrationBasic newInstance(Parcelable user) {
         RegistrationBasic fragment = new RegistrationBasic();
         Bundle args = new Bundle();
+        args.putParcelable(ARG_USER, user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,6 +64,9 @@ public class RegistrationBasic extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            user = getArguments().getParcelable(ARG_USER);
+        }
     }
 
     @Override
@@ -81,7 +100,6 @@ public class RegistrationBasic extends Fragment {
     }
 
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(String dname, String code, String mobile, String carrier){
         Log.d(TAG, "nextButtonPressed");
         if(!validateForm()){
@@ -89,7 +107,6 @@ public class RegistrationBasic extends Fragment {
         }
         Log.d(TAG, "nextFragmentInit");
         //Construct a User object
-        User user = new User();
         user.setDisplayName(dname);
         user.setCountryCode(code);
         user.setmPhone(mobile);
@@ -97,7 +114,7 @@ public class RegistrationBasic extends Fragment {
 
         //Pass object and start new fragment
         this.mListener.onFragmentInteraction(TAG, user);
-        getActivity().getSupportFragmentManager().popBackStack();
+
     }
 
     @Override
@@ -159,6 +176,7 @@ public class RegistrationBasic extends Fragment {
             mCarrierField.setError(null);
         }
 
+        if (DEBUG){return true;}
         return valid;
     }
 }

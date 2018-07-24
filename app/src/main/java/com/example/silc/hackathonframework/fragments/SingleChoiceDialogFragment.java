@@ -34,17 +34,17 @@ public class SingleChoiceDialogFragment extends DialogFragment implements Adapte
     public interface NoticeDialogListener{
         public void onDialogTextSelect(int id, String dialog);
     }
-
-    @Override
-    public void onAttach(Activity activity){
-        super.onAttach(activity);
-        try{
-            this.notice = (NoticeDialogListener) activity;
-        }catch (final ClassCastException e){
-            throw new ClassCastException(activity.toString() + " must implement NoticeDialogListener");
-
-        }
-    }
+//
+//    @Override
+//    public void onAttach(Activity activity){
+//        super.onAttach(activity);
+//        try{
+//            this.notice = (NoticeDialogListener) activity;
+//        }catch (final ClassCastException e){
+//            throw new ClassCastException(activity.toString() + " must implement NoticeDialogListener");
+//
+//        }
+//    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
