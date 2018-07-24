@@ -3,6 +3,7 @@ package com.example.silc.hackathonframework.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,6 +15,8 @@ import android.support.v4.app.FragmentTransaction;
 
 
 import com.example.silc.hackathonframework.R;
+import com.example.silc.hackathonframework.fragments.RegistrationAddress;
+import com.example.silc.hackathonframework.fragments.RegistrationBasic;
 import com.example.silc.hackathonframework.fragments.SingleChoiceDialogFragment;
 import com.example.silc.hackathonframework.helpers.Utils;
 import com.example.silc.hackathonframework.models.*;
@@ -34,11 +37,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class Registration extends AppCompatActivity implements SingleChoiceDialogFragment.NoticeDialogListener, View.OnClickListener{
+public class Registration extends AppCompatActivity implements SingleChoiceDialogFragment.NoticeDialogListener, View.OnClickListener ,
+        RegistrationBasic.OnFragmentInteractionListener, RegistrationAddress.OnFragmentInteractionListener{
     private static final String TAG = "Registration";
     private int dialog_id;
     private int country_id;
     private int state_id;
+    private User user;
     private ArrayList<State> states;
 
     private EditText mEmailField;
@@ -62,31 +67,33 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        //Variables
-        country_id = 0;
-        state_id = 0;
-
-
-        //Views
-        mCountryCode = findViewById(R.id.countryCode);
-        mEmailField = findViewById(R.id.email);
-        mPasswordField = findViewById(R.id.password);
-        mDisplayNameField = findViewById(R.id.dname);
-        mMobileField = findViewById(R.id.mobile);
-        mCarrierField = findViewById(R.id.carrier);
-        mAddressField = findViewById(R.id.address);
-        mCountryList = findViewById(R.id.country);
-        mStateList = findViewById(R.id.state);
-        mCityList = findViewById(R.id.city);
-        mZipCodeField = findViewById(R.id.zipcode);
-
-        //Buttons
-        findViewById(R.id.signUpButton).setOnClickListener(this);
-        mCountryList.setOnClickListener(this);
-        mStateList.setOnClickListener(this);
-        mCityList.setOnClickListener(this);
-
-        mAuth = FirebaseAuth.getInstance();
+        RegistrationBasic fragmentBasic = new RegistrationBasic();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment, fragmentBasic).commit();
+//        //Variables
+//        country_id = 0;
+//        state_id = 0;
+//
+//
+//        //Views
+//        mCountryCode = findViewById(R.id.countryCode);
+//        mEmailField = findViewById(R.id.email);
+//        mPasswordField = findViewById(R.id.password);
+//        mDisplayNameField = findViewById(R.id.dname);
+//        mMobileField = findViewById(R.id.mobile);
+//        mCarrierField = findViewById(R.id.carrier);
+//        mAddressField = findViewById(R.id.address);
+//        mCountryList = findViewById(R.id.country);
+//        mStateList = findViewById(R.id.state);
+//        mCityList = findViewById(R.id.city);
+//        mZipCodeField = findViewById(R.id.zipcode);
+//
+//        //Buttons
+//        findViewById(R.id.signUpButton).setOnClickListener(this);
+//        mCountryList.setOnClickListener(this);
+//        mStateList.setOnClickListener(this);
+//        mCityList.setOnClickListener(this);
+//
+//        mAuth = FirebaseAuth.getInstance();
     }
 
     private void createAccount(String email, String password) {
@@ -239,6 +246,15 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
             Log.d(TAG, "State ID: " + Integer.toString(state_id));
         }else if (dialog_id == R.id.city){
             mCityList.setText(dialog);
+        }
+    }
+
+    @Override
+    public void onFragmentInteraction(String id, User user){
+        this.user = user;
+        if (id == "RegistrationBasic"){
+            RegistrationAddress fragmentBasic = new RegistrationAddress();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment, fragmentBasic).commit();
         }
     }
 
