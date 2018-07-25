@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent">
 
     <SearchView
         android:id="@+id/searchView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </SearchView>
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"></SearchView>
 
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
-        android:layout_height="326dp" >
-    </ListView>
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/searchView1"
+        app:layout_constraintEnd_toEndOf="parent"></ListView>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

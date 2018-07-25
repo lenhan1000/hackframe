@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#813400</color>
     <color name="colorPrimaryDarkFaded">#82302c29</color>
     <color name="colorBackgroundDark">#302c29</color>
+    <color name="colorBackgroundDarkFaded">#66615d</color>
     <color name="colorAccent">#FF4081</color>
     <color name="textColor">#FFFFFF</color>
     <color name="hintColor">#b4b4b4</color>

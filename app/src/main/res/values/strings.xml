@@ -6,6 +6,12 @@
     <string name="title_settings">Settings</string>
     <string name="title_more">More</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="text_dashboard_health">Health</string>
+    <string name="text_dashboard_profile">Pet Profile</string>
+    <string name="text_dashboard_goals">Goals</string>
+    <string name="text_dashboard_activity">Activities</string>
+    <string name="text_dashboard_balance">Balance/Battery</string>
+    <string name="text_dashboard_market">Marketplace</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

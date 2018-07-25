@@ -26,4 +26,10 @@
         <item name="android:textColor">@color/textColor</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="buttonDashboardStandard" >
+        <item name="android:gravity">top|left</item>
+        <item name="android:background">@drawable/button_dashboard_colors</item>
+        <item name="android:textAllCaps">false</item>>
+    </style>
 </resources>

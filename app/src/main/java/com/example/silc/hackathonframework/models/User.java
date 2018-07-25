@@ -2,6 +2,7 @@ package com.example.silc.hackathonframework.models;
 
 import android.os.Parcelable;
 import android.os.Parcel;
+import android.util.Log;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -9,6 +10,7 @@ import java.io.Serializable;
 
 @IgnoreExtraProperties
 public class User implements Parcelable{
+    private static final String TAG = "models.Users";
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public User createFromParcel(Parcel in) {
@@ -118,6 +120,34 @@ public class User implements Parcelable{
         dest.writeString(this.state);
         dest.writeString(this.city);
         dest.writeString(this.zipCode);
+    }
+
+    //Util Functions
+
+    public void setStringKey(String key, String value){
+        switch (key){
+            case "displayName":
+                this.setDisplayName(value);
+            case "mPhone":
+                this.setmPhone(value);
+            case "carrier":
+                this.setCarrier(value);
+            case "address":
+                this.setAddress(value);
+            case "country":
+                this.setCountry(value);
+            case "state":
+                this.setState(value);
+            case "city":
+                this.setCity(value);
+            case "zipCode":
+                this.setZipCode(value);
+            case "countryCode":
+                this.setCountryCode(value);
+            default:
+                Log.e(TAG,"invalid key.");
+        }
+
     }
 
     public String toString(){

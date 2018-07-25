@@ -12,10 +12,10 @@
     <EditText
         android:id="@+id/username"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="38dp"
         android:layout_marginEnd="14dp"
         android:layout_marginStart="14dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/login_text_bg"
         android:ems="10"
         android:hint="username"
@@ -24,8 +24,9 @@
         android:textColor="#000000"
         android:textColorHint="#b4b4b4"
         android:textSize="14dp"
+        app:layout_constraintBottom_toTopOf="@+id/logInButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,7 +45,6 @@
         android:textColorHint="#b4b4b4"
         android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username" />
 
@@ -58,7 +58,6 @@
         android:background="#000000"
         app:layout_constraintBottom_toTopOf="@+id/password"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username" />
 
@@ -78,16 +77,19 @@
 
     <Button
         android:id="@+id/logInButton"
+        style="@style/buttonStandard"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="14dp"
         android:layout_marginStart="14dp"
-        android:layout_marginTop="20dp"
-        style="@style/buttonStandard"
+        android:layout_marginTop="33dp"
         android:text="Log In"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rememberBox" />
+        app:layout_constraintTop_toBottomOf="@+id/username" />
 
     <TextView
         android:id="@+id/forgetPassLink"
@@ -105,7 +107,7 @@
         android:layout_width="148dp"
         android:layout_height="22dp"
         android:layout_marginStart="110dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
         android:text="Don't have an account?"
         android:textSize="14dp"
         app:layout_constraintEnd_toStartOf="@+id/signUpLink"
@@ -117,7 +119,7 @@
         android:layout_width="68dp"
         android:layout_height="22dp"
         android:layout_marginEnd="110dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
         android:text="Sign Up"
         android:textColor="@drawable/text_selectors"
         android:textSize="14dp"
