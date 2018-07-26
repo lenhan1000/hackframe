@@ -1,18 +1,25 @@
 package com.example.silc.hackathonframework.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import com.example.silc.hackathonframework.helpers.Utils;
 import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.example.silc.hackathonframework.R;
 
-public class Dashboard extends AppCompatActivity {
+public class Dashboard extends AppCompatActivity implements View.OnClickListener{
     private BottomNavigationView bottom;
+    private ConstraintLayout mContentFrame;
     private FirebaseAuth mAuth;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -26,6 +33,10 @@ public class Dashboard extends AppCompatActivity {
                 case R.id.navigation_pets:
                     return true;
                 case R.id.navigation_settings:
+                    mContentFrame.removeAllViews();
+                    LayoutInflater.from(Dashboard.this).inflate(R.layout.activity_settings, mContentFrame);
+
+                    Dashboard.this.findViewById(R.id.button2).setOnClickListener(Dashboard.this);
                     return true;
                 case R.id.navigation_more:
                     return true;
@@ -60,15 +71,37 @@ public class Dashboard extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Pet Name");
-        getSupportActionBar().setSubtitle("Last Synced <Time>");
+        getSupportActionBar().setSubtitle("Last Synced " + Utils.getCurrentTime());
 
+        mContentFrame = findViewById(R.id.content);
         mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        mAuth.signOut();
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onClick(View v){
+        switch(v.getId()){
+            case R.id.button2:
+                mAuth.signOut();
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+                finish();
+            default:
+                return;
+        }
     }
 
 }

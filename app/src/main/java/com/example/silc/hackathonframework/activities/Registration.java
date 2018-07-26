@@ -192,7 +192,7 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
     //INFLATE FUNCTIONS
 
     private void inflate_basic(){
-        LayoutInflater.from(this).inflate(R.layout.frame_registration_basic,mContentFrame);
+        LayoutInflater.from(this).inflate(R.layout.activity_registration_basic,mContentFrame);
 
         //Views
         mDisplayNameField = mContentFrame.findViewById(R.id.dname);
@@ -222,7 +222,7 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
 
     private void inflate_address(){
         mContentFrame.removeAllViews();
-        LayoutInflater.from(this).inflate(R.layout.frame_registration_address, mContentFrame);
+        LayoutInflater.from(this).inflate(R.layout.activity_registration_address, mContentFrame);
 
         //Views
         mCountryList = mContentFrame.findViewById(R.id.country);
@@ -258,7 +258,7 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
 
     private void inflate_cred(){
         mContentFrame.removeAllViews();
-        LayoutInflater.from(this).inflate(R.layout.frame_registration_cred, mContentFrame);
+        LayoutInflater.from(this).inflate(R.layout.activity_registration_cred, mContentFrame);
 
         //Views
         mEmailField = mContentFrame.findViewById(R.id.email);
@@ -389,6 +389,7 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
                                 mDatabase.child(userauth.getUid()).setValue(user);
                                 Intent intent = new Intent(getApplicationContext(), Dashboard.class);
                                 startActivity(intent);
+                                finish();
                             }catch (NullPointerException e){
                                 Log.e(TAG, "Null user");
 

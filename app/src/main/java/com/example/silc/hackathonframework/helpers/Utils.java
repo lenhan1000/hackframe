@@ -7,8 +7,8 @@ import android.util.Log;
 import java.io.IOException;
 import org.json.*;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
 
 public final class Utils{
     private static final String TAG = "helpers.Utils";
@@ -73,6 +73,13 @@ public final class Utils{
     public static boolean isValidZipCode(String zip){
         String pattern = "^[0-9]{5}(?:-[0-9]{4})?$";
         return zip.matches(pattern);
+    }
+
+
+    public static String getCurrentTime() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss");
+        return mdformat.format(calendar.getTime());
     }
 
 }

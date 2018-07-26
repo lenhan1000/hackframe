@@ -47,6 +47,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onClick(View v){
                 Intent intent = new Intent(getApplicationContext(), Registration.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -60,13 +61,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (currentUser!=null){
             Intent intent = new Intent(getApplicationContext(), Dashboard.class);
             startActivity(intent);
+            finish();
         }
     }
 
     @Override
     public void onDestroy(){
         super.onDestroy();
-        mAuth.signOut();
     }
 
     private void signIn(String email, String password) {
@@ -87,6 +88,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), Dashboard.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             // If sign in fails, display a message to the ic_user_black_24dp.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
