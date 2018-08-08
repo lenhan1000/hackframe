@@ -2,6 +2,7 @@ package com.example.silc.hackathonframework.helpers;
 
 import java.io.InputStream;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.io.IOException;
@@ -82,4 +83,53 @@ public final class Utils{
         return mdformat.format(calendar.getTime());
     }
 
+    public static void addtoJSON(JSONObject json, String key, String value){
+        try{
+            json.put(key, value);
+        }catch (JSONException e){
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
+    public static void putSharedPreferenes(Context context, String key, String value, String pref){
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                pref, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    public static void removeSharedPreferences(Context context, String key, String pref) {
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                pref, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.remove(key);
+        editor.apply();
+    }
+
+    public static void clearSharedPreferences(Context context, String pref) {
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                pref, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    public static String getStringSharedPreferences(Context context, String key, String def, String pref){
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                pref, Context.MODE_PRIVATE);
+        return sharedPref.getString(key, def);
+    }
+
+    public static int getIntSharedPreferences(Context context, String key, int def, String pref){
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                pref, Context.MODE_PRIVATE);
+        return sharedPref.getInt(key, def);
+    }
+
+    public static boolean containsSharedPreferences(Context context, String key, String pref){
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                pref, Context.MODE_PRIVATE);
+        return sharedPref.contains(key);
+    }
 }

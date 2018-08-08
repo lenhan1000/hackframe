@@ -1,16 +1,30 @@
 package com.example.silc.hackathonframework.models;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Parcelable;
 import android.os.Parcel;
 import android.util.Log;
 
+import com.example.silc.hackathonframework.R;
+import com.example.silc.hackathonframework.helpers.Http2Request;
+import com.example.silc.hackathonframework.helpers.Utils;
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.io.Serializable;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 @IgnoreExtraProperties
 public class User implements Parcelable{
     private static final String TAG = "models.Users";
+    private static final String infoUrl = "/users/info";
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public User createFromParcel(Parcel in) {
@@ -22,19 +36,21 @@ public class User implements Parcelable{
         }
     };
 
+    private String email;
     private String displayName;
-    private String mPhone;
+    private String mobilePhone;
     private String carrier;
     private String address;
     private String country;
     private String state;
     private String city;
-    public String zipCode;
-    public String countryCode;
+    private String zipCode;
+    private String countryCode;
 
     public User(){
+        email=null;
         displayName= null;
-        mPhone= null;
+        mobilePhone= null;
         carrier= null;
         address= null;
         country= null;
@@ -43,11 +59,11 @@ public class User implements Parcelable{
         zipCode= null;
         countryCode= null;
     }
-    public User(String displayName, String mPhone, String carrier, String zipCode,
+    public User(String displayName, String mobilePhone, String carrier, String zipCode,
                 String address, String country, String state, String city,
-                String countryCode){
+                String countryCode, String email){
         this.displayName = displayName;
-        this.mPhone = mPhone;
+        this.mobilePhone = mobilePhone;
         this.carrier = carrier;
         this.address = address;
         this.country = country;
@@ -55,11 +71,14 @@ public class User implements Parcelable{
         this.city = city;
         this.zipCode = zipCode;
         this.countryCode = countryCode;
+        this.email=email;
     }
+
+    public String getEmail(){ return this.email; }
 
     public String getDisplayName(){ return this.displayName; }
 
-    public String getmPhone(){ return this.mPhone; }
+    public String getmobilePhone(){ return this.mobilePhone; }
 
     public String getCarrier(){ return this.carrier; }
 
@@ -75,9 +94,11 @@ public class User implements Parcelable{
 
     public String getCountryCode(){ return this.zipCode; }
 
+    public void setEmail(String arg){ this.email = arg; }
+
     public void setDisplayName(String arg){  this.displayName = arg; }
 
-    public void setmPhone(String arg){  this.mPhone = arg; }
+    public void setmobilePhone(String arg){  this.mobilePhone = arg; }
 
     public void setCarrier(String arg){  this.carrier = arg; }
 
@@ -96,7 +117,7 @@ public class User implements Parcelable{
     //Parcelling
     public User(Parcel in){
         this.displayName = in.readString();
-        this.mPhone = in.readString();
+        this.mobilePhone = in.readString();
         this.carrier = in.readString();
         this.address = in.readString();
         this.country = in.readString();
@@ -111,8 +132,9 @@ public class User implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags){
+        dest.writeString(this.email);
         dest.writeString(this.displayName);
-        dest.writeString(this.mPhone);
+        dest.writeString(this.mobilePhone);
         dest.writeString(this.carrier);
         dest.writeString(this.address);
         dest.writeString(this.countryCode);
@@ -126,24 +148,26 @@ public class User implements Parcelable{
 
     public void setStringKey(String key, String value){
         switch (key){
+            case "email":
+                this.setEmail(value); break;
             case "displayName":
-                this.setDisplayName(value);
-            case "mPhone":
-                this.setmPhone(value);
+                this.setDisplayName(value); break;
+            case "mobilePhone":
+                this.setmobilePhone(value); break;
             case "carrier":
-                this.setCarrier(value);
+                this.setCarrier(value); break;
             case "address":
-                this.setAddress(value);
+                this.setAddress(value); break;
             case "country":
-                this.setCountry(value);
+                this.setCountry(value); break;
             case "state":
-                this.setState(value);
+                this.setState(value); break;
             case "city":
-                this.setCity(value);
+                this.setCity(value); break;
             case "zipCode":
-                this.setZipCode(value);
+                this.setZipCode(value); break;
             case "countryCode":
-                this.setCountryCode(value);
+                this.setCountryCode(value); break;
             default:
                 Log.e(TAG,"invalid key.");
         }
@@ -152,9 +176,10 @@ public class User implements Parcelable{
 
     public String toString(){
         return "Student{" +
+                "email='"+ email + '\''+
                 "displayName='" + displayName + '\'' +
                 ", countryCode='" + countryCode + '\'' +
-                ", mPhone='" + mPhone + '\'' +
+                ", mobilePhone='" + mobilePhone + '\'' +
                 ", carrier='" + carrier + '\'' +
                 ", address='" + address + '\'' +
                 ", country='" + country + '\'' +
@@ -162,5 +187,48 @@ public class User implements Parcelable{
                 ", city='" + city + '\'' +
                 ", zipCode='" + zipCode + '\'' +
                 '}';
+    }
+
+    public JSONObject toJSON(){
+        JSONObject jo = new JSONObject();
+        try {
+            jo.put("email", email);
+            jo.put("displayName", displayName);
+            jo.put("countryCode", countryCode);
+            jo.put("mobilePhone", mobilePhone);
+            jo.put("carrier", carrier);
+            jo.put("address", address);
+            jo.put("country", country);
+            jo.put("state", state);
+            jo.put("city", city);
+            jo.put("zipCode", zipCode);
+        }catch(JSONException e){
+            Log.e(TAG, e.getMessage());
+        }
+
+        return jo;
+    }
+
+    public static void processLogin(String email, String token, Context context){
+        Utils.putSharedPreferenes(context,
+                context.getString(R.string.user_preference_email),
+                email,
+                context.getString(R.string.user_preference));
+        Utils.putSharedPreferenes(context,
+                context.getString(R.string.user_preference_token),
+                token,
+                context.getString(R.string.user_preference));
+
+    }
+
+    public static void getUserInfo(Context context){
+        String token = Utils.getStringSharedPreferences(context,
+                context.getString(R.string.user_preference_token),
+                "",
+                context.getString(R.string.user_preference));
+        if (token.isEmpty()) return;
+        Http2Request req = new Http2Request(context);
+        req.get(context.getString(R.string.api_base_url),infoUrl,
+                token);
     }
 }

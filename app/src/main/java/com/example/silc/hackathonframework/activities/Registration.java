@@ -1,8 +1,9 @@
 package com.example.silc.hackathonframework.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,28 +18,32 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.example.silc.hackathonframework.R;
 import com.example.silc.hackathonframework.fragments.SingleChoiceDialogFragment;
+import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.helpers.Utils;
 import com.example.silc.hackathonframework.models.*;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.hbb20.CountryCodePicker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class Registration extends AppCompatActivity implements SingleChoiceDialogFragment.NoticeDialogListener, View.OnClickListener{
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.Response;
+
+public class Registration extends AppCompatActivity implements SingleChoiceDialogFragment.NoticeDialogListener,
+        View.OnClickListener, Http2Request.Http2RequestListener{
     private static final String TAG = "activities.Registration";
-    private static final boolean DEBUG = false;
+    private static final String domain = "172.19.0.1:3000";
+    private static final boolean DEBUG = true;
+    public static final MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
 
     private int dialog_id;
     private int country_id;
@@ -56,8 +61,10 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
     private CountryCodePicker mCountryCodeField;
     private FrameLayout mContentFrame;
 
-    private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
+    private SharedPreferences userPref;
+    private String registerUrl = "/users";
+    private String loginUrl = "/users/login";
+    private Http2Request req;
 
     private TextView mCountryList;
     private TextView mStateList;
@@ -72,11 +79,13 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
         state_id = 0;
         user = new User();
 
+        //Requests
 
+        req = new Http2Request(this);
+        userPref = this.getSharedPreferences(getString(R.string.user_preference),
+                Context.MODE_PRIVATE);
         mContentFrame = findViewById(R.id.view);
         inflate_basic();
-
-        mAuth = FirebaseAuth.getInstance();
     }
 
     //IMPLEMENT FUNCTIONS
@@ -85,7 +94,8 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
     public void onClick(View v){
         int i = v.getId();
         if (i == R.id.signUpButton){
-            createAccount(mEmailField.getText().toString(),mPasswordField.getText().toString());
+            createAccount(mEmailField.getText().toString(),
+                    mPasswordField.getText().toString());
         }
         if (i == R.id.country){
             dialog_id = R.id.country;
@@ -192,7 +202,8 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
     //INFLATE FUNCTIONS
 
     private void inflate_basic(){
-        LayoutInflater.from(this).inflate(R.layout.activity_registration_basic,mContentFrame);
+        LayoutInflater.from(this).inflate(R.layout.activity_registration_basic,
+                mContentFrame);
 
         //Views
         mDisplayNameField = mContentFrame.findViewById(R.id.dname);
@@ -212,7 +223,7 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
                 //Construct a User object
                 user.setDisplayName(mDisplayNameField.getText().toString());
                 user.setCountryCode(mCountryCodeField.getSelectedCountryCode());
-                user.setmPhone(mMobileField.getText().toString());
+                user.setmobilePhone(mMobileField.getText().toString());
                 user.setCarrier(mCarrierField.getText().toString());
                 inflate_address();
             }
@@ -222,7 +233,8 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
 
     private void inflate_address(){
         mContentFrame.removeAllViews();
-        LayoutInflater.from(this).inflate(R.layout.activity_registration_address, mContentFrame);
+        LayoutInflater.from(this).inflate(R.layout.activity_registration_address,
+                mContentFrame);
 
         //Views
         mCountryList = mContentFrame.findViewById(R.id.country);
@@ -258,7 +270,8 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
 
     private void inflate_cred(){
         mContentFrame.removeAllViews();
-        LayoutInflater.from(this).inflate(R.layout.activity_registration_cred, mContentFrame);
+        LayoutInflater.from(this).inflate(R.layout.activity_registration_cred,
+                mContentFrame);
 
         //Views
         mEmailField = mContentFrame.findViewById(R.id.email);
@@ -361,72 +374,87 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
 
     private void createAccount(String email, String password) {
         Log.d(TAG, "createAccount:" + email);
-        if (!validateFormCred()) {
-            return;
-        }
+        if (!validateFormCred()) return;
 
-        // [START create_user_with_email]
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in ic_user_black_24dp's information
-                            Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser userauth = mAuth.getCurrentUser();
-                            User user = new User(mDisplayNameField.getText().toString(),
-                                    mMobileField.getText().toString(),
-                                    mCarrierField.getText().toString(),
-                                    mZipCodeField.getText().toString(),
-                                    mAddressField.getText().toString(),
-                                    mCountryList.getText().toString(),
-                                    mStateList.getText().toString(),
-                                    mCityList.getText().toString(),
-                                    mCountryCodeField.getSelectedCountryCode()
-                            );
-                            mDatabase = FirebaseDatabase.getInstance().getReference("Users");
-                            try {
-                                mDatabase.child(userauth.getUid()).setValue(user);
-                                Intent intent = new Intent(getApplicationContext(), Dashboard.class);
-                                startActivity(intent);
-                                finish();
-                            }catch (NullPointerException e){
-                                Log.e(TAG, "Null user");
-
-                            }
-
-                        } else {
-                            // If sign in fails, display a message to the ic_user_black_24dp.
-                            try {
-                                throw task.getException();
-                            }catch (FirebaseAuthWeakPasswordException e){
-                                Toast.makeText(Registration.this, "Weak Password",
-                                        Toast.LENGTH_SHORT).show();
-                            }catch(FirebaseAuthInvalidCredentialsException e){
-                                Toast.makeText(Registration.this, "Invalid Email",
-                                        Toast.LENGTH_SHORT).show();
-                            }catch(FirebaseAuthUserCollisionException e){
-                                Toast.makeText(Registration.this, "Email already used",
-                                        Toast.LENGTH_SHORT).show();
-                            }catch(Exception e){
-                                Log.e(TAG, e.getMessage());
-                            }
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-
-                        }
-
-                    }
-                });
-        // [END create_user_with_email]
-    }
+        user.setEmail(email);
+        JSONObject regUser = user.toJSON();
+        Utils.addtoJSON(regUser, "password", password);
+        Http2Request regRequest = new Http2Request(this);
+        regRequest.post(getString(R.string.api_base_url), registerUrl, regUser.toString());
+//                new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                call.cancel();
+//                Log.e(TAG, e.getMessage());
+//            }
 //
-//    private void update_user(HashMap kv){
-//        Iterator it = kv.entrySet().iterator();
-//        while(it.hasNext()){
-//            Map.Entry pair = (Map.Entry) it.next();
-//            this.user.setStringKey(pair.getKey().toString(),pair.getValue().toString());
-//            it.remove();
-//        }
-//    }
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                try {
+//                    JSONObject message = new JSONObject(response.body().string());
+//                    boolean success = message.getBoolean("success");
+//                    if (!success) {
+//                        Log.d(TAG, message.getString("message"));
+//                    } else {
+//                        login(email, password);
+//                    }
+//                } catch (JSONException e) {
+//                    Log.e(TAG, e.getMessage());
+//                }
+//            }
+//        });
+    }
+
+    public void login(final String email, String password) {
+        String json = Http2Request.registerUserJson(email, password);
+        req.post(getString(R.string.api_base_url), loginUrl, json);
+//        new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                call.cancel();
+//                Log.e(TAG, e.getMessage());
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                try {
+//                    JSONObject message = new JSONObject(response.body().string());
+//                    boolean success = message.getBoolean("success");
+//                    if (!success) {
+//                        Log.d(TAG, message.getString("message"));
+//                    } else {
+//                        User.processLogin(email, message.getString("token"), Registration.this);
+//
+//                        Intent intent = new Intent(getApplicationContext(), Dashboard.class);
+//                        startActivity(intent);
+//                        finish();
+//                    }
+//                } catch (JSONException e) {
+//                    Log.e(TAG, e.getMessage());
+//                }
+//            }
+//        });
+    }
+
+    @Override
+    public void onRequestFinished(String id, JSONObject res){
+        try {
+            boolean success = res.getBoolean("success");
+            if (!success) Log.d(TAG, res.getString("message"));
+            else {
+                if (id == registerUrl)
+                    login(user.getEmail(), mPasswordField.getText().toString());
+                else {
+                    User.processLogin(user.getEmail(), res.getString("token"), Registration.this);
+                    Intent intent = new Intent(getApplicationContext(), Dashboard.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+
+        }catch (JSONException e){
+            Log.e(TAG, e.getMessage());
+        }
+    }
 
 }

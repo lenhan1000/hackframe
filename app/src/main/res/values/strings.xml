@@ -12,6 +12,13 @@
     <string name="text_dashboard_activity">Activities</string>
     <string name="text_dashboard_balance">Balance/Battery</string>
     <string name="text_dashboard_market">Marketplace</string>
-
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    //Shared-Preferences
+    <string name="user_preference">com.example.fetchcoins.USER_INFORMATION</string>
+    <string name="user_preference_token">token</string>
+    <string name="user_preference_email">email</string>
+
+    //API
+    <string name="api_base_url">http://172.19.0.1:3000</string>
 </resources>
