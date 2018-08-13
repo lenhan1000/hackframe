@@ -78,9 +78,8 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Pet Name");
+        getSupportActionBar().setTitle("Champ");
         getSupportActionBar().setSubtitle("Last Synced " + Utils.getCurrentTime());
-
         mContentFrame = findViewById(R.id.content);
     }
 

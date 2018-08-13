@@ -35,7 +35,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@color/colorPrimaryDark"/>
+        app:titleTextColor="@color/textColor"
+        app:subtitleTextColor="@color/textColorButton"/>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/content"
@@ -47,26 +48,26 @@
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/buttonHealth"
+            android:id="@+id/frameHealth"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/buttonGoals"
-            app:layout_constraintEnd_toStartOf="@+id/buttonProfile"
+            app:layout_constraintBottom_toTopOf="@+id/frameGoals"
+            app:layout_constraintEnd_toStartOf="@+id/frameProfile"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageButton
-                android:id="@+id/imageHealth"
+                android:id="@+id/buttonHealth"
                 style="@style/buttonDashboardStandard"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_heart_color_shadow_64dp"
+                android:src="@drawable/ic_heart_pastel_64dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -82,6 +83,7 @@
                 android:layout_marginStart="8dp"
                 android:text="@string/text_dashboard_health"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/textColorButton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -89,25 +91,25 @@
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/buttonProfile"
+            android:id="@+id/frameProfile"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/buttonActivity"
+            app:layout_constraintBottom_toTopOf="@+id/frameActivity"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/buttonHealth"
+            app:layout_constraintStart_toEndOf="@+id/frameHealth"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="spread">
 
             <ImageButton
-                android:id="@+id/imageProfile"
+                android:id="@+id/buttonProfile"
                 style="@style/buttonDashboardStandard"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_dog_color_shadow_64dp"
+                android:src="@drawable/ic_dog_pastel_64dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -123,30 +125,31 @@
                 android:layout_marginStart="8dp"
                 android:text="@string/text_dashboard_profile"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/textColorButton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/buttonGoals"
+            android:id="@+id/frameGoals"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/buttonBalance"
-            app:layout_constraintEnd_toStartOf="@+id/buttonActivity"
+            app:layout_constraintBottom_toTopOf="@+id/frameBalance"
+            app:layout_constraintEnd_toStartOf="@+id/frameActivity"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonHealth">
+            app:layout_constraintTop_toBottomOf="@+id/frameHealth">
 
             <ImageButton
-                android:id="@+id/imageGoals"
+                android:id="@+id/buttonGoals"
                 style="@style/buttonDashboardStandard"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_trophy_color_shadow_64dp"
+                android:src="@drawable/ic_medal_pastel_64dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -162,30 +165,30 @@
                 android:layout_marginStart="8dp"
                 android:text="@string/text_dashboard_goals"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/textColorButton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
         </android.support.constraint.ConstraintLayout>
-        >
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/buttonActivity"
+            android:id="@+id/frameActivity"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/buttonMarketplace"
+            app:layout_constraintBottom_toTopOf="@+id/frameMarketplace"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/buttonGoals"
-            app:layout_constraintTop_toBottomOf="@+id/buttonProfile">
+            app:layout_constraintStart_toEndOf="@+id/frameGoals"
+            app:layout_constraintTop_toBottomOf="@+id/frameProfile">
 
             <ImageButton
-                android:id="@+id/imageActivity"
+                android:id="@+id/buttonActivity"
                 style="@style/buttonDashboardStandard"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_stats_color_shadow_64dp"
+                android:src="@drawable/ic_stats_pastel_64dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -201,30 +204,31 @@
                 android:layout_marginStart="8dp"
                 android:text="@string/text_dashboard_activity"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/textColorButton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/buttonBalance"
+            android:id="@+id/frameBalance"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/buttonMarketplace"
+            app:layout_constraintEnd_toStartOf="@+id/frameMarketplace"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonGoals">
+            app:layout_constraintTop_toBottomOf="@+id/frameGoals">
 
             <ImageButton
-                android:id="@+id/imageBalance"
+                android:id="@+id/buttonBalance"
                 style="@style/buttonDashboardStandard"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_balance_color_shadow_64dp"
+                android:src="@drawable/ic_balance_pastel_64dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -240,13 +244,14 @@
                 android:layout_marginStart="8dp"
                 android:text="@string/text_dashboard_balance"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/textColorButton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/buttonMarketplace"
+            android:id="@+id/frameMarketplace"
             style="@style/buttonDashboardStandard"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -256,15 +261,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/buttonBalance"
-            app:layout_constraintTop_toBottomOf="@+id/buttonActivity">
+            app:layout_constraintStart_toEndOf="@+id/frameBalance"
+            app:layout_constraintTop_toBottomOf="@+id/frameActivity">
 
             <ImageButton
-                android:id="@+id/imageMarket"
+                android:id="@+id/buttonMarket"
                 style="@style/buttonDashboardStandard"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_shop_color_shadow_64dp"
+                android:src="@drawable/ic_shop_pastel_64dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -280,6 +285,7 @@
                 android:layout_marginStart="8dp"
                 android:text="@string/text_dashboard_market"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/textColorButton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

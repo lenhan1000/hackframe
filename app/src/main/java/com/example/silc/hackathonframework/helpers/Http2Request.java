@@ -3,8 +3,6 @@ package com.example.silc.hackathonframework.helpers;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.silc.hackathonframework.activities.Registration;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,7 +25,6 @@ public class Http2Request {
     private Context context;
     private OkHttpClient client = new OkHttpClient();
     public Http2RequestListener notice;
-
     public Callback callback = new Callback(){
         @Override
         public void onFailure(Call call, IOException e) {

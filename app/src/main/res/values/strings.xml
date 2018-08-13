@@ -20,5 +20,5 @@
     <string name="user_preference_email">email</string>
 
     //API
-    <string name="api_base_url">http://172.19.0.1:3000</string>
+    <string name="api_base_url">https://fetch-coins-server.herokuapp.com</string>
 </resources>

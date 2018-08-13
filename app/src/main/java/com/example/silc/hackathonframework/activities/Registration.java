@@ -21,29 +21,17 @@ import com.example.silc.hackathonframework.fragments.SingleChoiceDialogFragment;
 import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.helpers.Utils;
 import com.example.silc.hackathonframework.models.*;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.hbb20.CountryCodePicker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-import java.io.IOException;
 import java.util.ArrayList;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.Response;
 
 public class Registration extends AppCompatActivity implements SingleChoiceDialogFragment.NoticeDialogListener,
         View.OnClickListener, Http2Request.Http2RequestListener{
     private static final String TAG = "activities.Registration";
-    private static final String domain = "172.19.0.1:3000";
-    private static final boolean DEBUG = true;
-    public static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
+    private static final boolean DEBUG = false;
 
     private int dialog_id;
     private int country_id;
@@ -61,7 +49,6 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
     private CountryCodePicker mCountryCodeField;
     private FrameLayout mContentFrame;
 
-    private SharedPreferences userPref;
     private String registerUrl = "/users";
     private String loginUrl = "/users/login";
     private Http2Request req;
@@ -82,10 +69,16 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
         //Requests
 
         req = new Http2Request(this);
-        userPref = this.getSharedPreferences(getString(R.string.user_preference),
-                Context.MODE_PRIVATE);
         mContentFrame = findViewById(R.id.view);
         inflate_basic();
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     //IMPLEMENT FUNCTIONS
@@ -381,59 +374,11 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
         Utils.addtoJSON(regUser, "password", password);
         Http2Request regRequest = new Http2Request(this);
         regRequest.post(getString(R.string.api_base_url), registerUrl, regUser.toString());
-//                new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                call.cancel();
-//                Log.e(TAG, e.getMessage());
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                try {
-//                    JSONObject message = new JSONObject(response.body().string());
-//                    boolean success = message.getBoolean("success");
-//                    if (!success) {
-//                        Log.d(TAG, message.getString("message"));
-//                    } else {
-//                        login(email, password);
-//                    }
-//                } catch (JSONException e) {
-//                    Log.e(TAG, e.getMessage());
-//                }
-//            }
-//        });
     }
 
     public void login(final String email, String password) {
         String json = Http2Request.registerUserJson(email, password);
         req.post(getString(R.string.api_base_url), loginUrl, json);
-//        new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                call.cancel();
-//                Log.e(TAG, e.getMessage());
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                try {
-//                    JSONObject message = new JSONObject(response.body().string());
-//                    boolean success = message.getBoolean("success");
-//                    if (!success) {
-//                        Log.d(TAG, message.getString("message"));
-//                    } else {
-//                        User.processLogin(email, message.getString("token"), Registration.this);
-//
-//                        Intent intent = new Intent(getApplicationContext(), Dashboard.class);
-//                        startActivity(intent);
-//                        finish();
-//                    }
-//                } catch (JSONException e) {
-//                    Log.e(TAG, e.getMessage());
-//                }
-//            }
-//        });
     }
 
     @Override

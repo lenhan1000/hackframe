@@ -19,7 +19,8 @@
             android:gravity="center_vertical"
             android:paddingStart="100dp"
             android:paddingEnd="100dp"
-            android:text="Sign Out" />
+            android:text="Sign Out"
+            android:textColor="@color/textColorButton"/>
 
         <ImageView
             android:id="@+id/imageView"
@@ -33,6 +34,6 @@
             app:layout_constraintBottom_toBottomOf="@+id/button2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_sign_out_color_64dp" />
+            app:srcCompat="@drawable/ic_sign_out_pastel_64dp" />
     </android.support.constraint.ConstraintLayout>
 </LinearLayout>
