@@ -1,11 +1,14 @@
 package com.example.silc.hackathonframework.activities;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.FrameLayout;
 
 import com.example.silc.hackathonframework.helpers.Http2Request;
@@ -23,11 +27,15 @@ import com.example.silc.hackathonframework.models.User;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Dashboard extends AppCompatActivity implements View.OnClickListener, Http2Request.Http2RequestListener{
     private static final String TAG = "activities.Dashboard";
-    private BottomNavigationView bottom;
     private ConstraintLayout mContentFrame;
     private Context context = this;
+    private BottomNavigationView navigation;
+    private Toolbar myToolbar;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -36,6 +44,12 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_profile:
+                    Pair<View, String> p1 = Pair.create((View) myToolbar, "appbar");
+                    Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
+                    ActivityOptionsCompat options = ActivityOptionsCompat.
+                            makeSceneTransitionAnimation(Dashboard.this, p1, p2);
+                    startActivity(new Intent(context, Profile.class), options.toBundle());
+
                     User.getUserInfo(context);
                     return true;
                 case R.id.navigation_pets:
@@ -74,9 +88,9 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Champ");
         getSupportActionBar().setSubtitle("Last Synced " + Utils.getCurrentTime());

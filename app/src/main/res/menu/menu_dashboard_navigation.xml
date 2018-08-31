@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/navigation_dashboard"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/title_activity_dashboard"/>
+
+    <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_user_black_24dp"
         android:title="@string/title_profile" />

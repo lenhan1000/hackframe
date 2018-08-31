@@ -3,10 +3,11 @@
     <color name="colorPrimary">#9ab7d3</color>
     <color name="colorSecondary">#bdd0c4</color>
     <color name="colorPrimaryDark">#5d82a6</color>
+    <color name="colorSecondaryDark">#71a384</color>
     <color name="colorPrimaryDarkFaded">#82302c29</color>
     <color name="colorBackgroundDark">#f7e1d3</color>
     <color name="colorBackgroundDarkFaded">#66615d</color>
-    <color name="colorAccent">#bdd0c4</color>
+    <color name="colorAccent">#41a967</color>
     <color name="textColor">#5d82a6</color>
     <color name="textColorButton">#f7e1d3</color>
     <color name="hintColor">#b4b4b4</color>

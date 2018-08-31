@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.content.Intent;
 import android.view.View;
 import android.text.Html;
+import android.widget.Toast;
 
 
 import com.example.silc.hackathonframework.R;
@@ -27,9 +28,8 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, Http2Request.Http2RequestListener{
-    private static final String TAG = "EmailPassword";
+    private static final String TAG = "Login";
     private static final String loginUrl = "/users/login";
-
     private EditText mEmailField;
     private EditText mPasswordField;
     private String email;
@@ -124,6 +124,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try {
             boolean success = res.getBoolean("success");
             if (!success) {
+                Toast.makeText(this, "Unsucessful Login",
+                        Toast.LENGTH_SHORT).show();
                 Log.d(TAG, res.getString("message"));
             } else {
                 User.processLogin(email, res.getString("token"), this);

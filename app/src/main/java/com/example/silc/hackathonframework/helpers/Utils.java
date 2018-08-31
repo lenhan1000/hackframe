@@ -13,42 +13,27 @@ import java.text.SimpleDateFormat;
 
 public final class Utils{
     private static final String TAG = "helpers.Utils";
-    public static String loadJSONFromAsset(Context context, String filename) {
-        String json = null;
-        try {
-            InputStream is = context.getAssets().open(filename);
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
+    public static String loadJSONFromAsset(Context context, String filename)
+            throws IOException{
+        String json;
+        InputStream is = context.getAssets().open(filename);
+        int size = is.available();
+        byte[] buffer = new byte[size];
+        is.read(buffer);
+        is.close();
+        json = new String(buffer, "UTF-8");
         return json;
     }
 
-    public static ArrayList<JSONObject> getArrayListFromJSONArray(JSONArray jsonArray){
-
+    public static ArrayList<JSONObject> getArrayListFromJSONArray(JSONArray jsonArray)
+            throws JSONException{
         ArrayList<JSONObject> aList=new ArrayList<JSONObject>();
-
-        try {
-
-            if (jsonArray != null) {
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-
-                    aList.add(jsonArray.getJSONObject(i));
-
-                }
-
+        if (jsonArray != null) {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                aList.add(jsonArray.getJSONObject(i));
             }
-
-        }catch (JSONException je){je.printStackTrace();}
-
+        }
         return  aList;
-
     }
 
     public static boolean isValidEmail(String email){

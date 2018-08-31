@@ -14,17 +14,9 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.Serializable;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-
 @IgnoreExtraProperties
 public class User implements Parcelable{
     private static final String TAG = "models.Users";
-    private static final String infoUrl = "/users/info";
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public User createFromParcel(Parcel in) {
@@ -222,13 +214,18 @@ public class User implements Parcelable{
     }
 
     public static void getUserInfo(Context context){
-        String token = Utils.getStringSharedPreferences(context,
+        String token = getToken(context);
+        if (token.isEmpty()) return;
+        Http2Request req = new Http2Request(context);
+        String infoUrl = context.getResources().getString(R.string.api_user_info);
+        req.get(context.getString(R.string.api_base_url), infoUrl,
+                token);
+    }
+
+    public static String getToken(Context context){
+        return Utils.getStringSharedPreferences(context,
                 context.getString(R.string.user_preference_token),
                 "",
                 context.getString(R.string.user_preference));
-        if (token.isEmpty()) return;
-        Http2Request req = new Http2Request(context);
-        req.get(context.getString(R.string.api_base_url),infoUrl,
-                token);
     }
 }

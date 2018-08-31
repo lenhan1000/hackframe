@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackgroundDark"
+    tools:context=".activities.Profile">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/editFloatingBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="15dp"
+        android:clickable="true"
+        android:focusable="auto"
+        app:backgroundTint="@color/colorSecondaryDark"
+        app:srcCompat="@drawable/ic_edit_pastel_64dp" />
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:textColorHint="@color/textColor">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@color/colorSecondary"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/profile_image"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/pic_sample_profile"
+                    app:civ_border_color="@color/colorBackgroundDark"
+                    app:civ_border_width="2dp"
+                    app:civ_circle_background_color="@color/colorPrimaryDark" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_dislpayName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingTop="10dp">
+
+                    <EditText
+                        android:id="@+id/displayName"
+                        style="@style/editTextProfile"
+                        android:layout_width="wrap_content"
+                        android:gravity="center"
+                        android:text="Nhan Phan"
+                        android:textSize="30sp"
+                        android:textStyle="bold"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="16dp" />
+
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_email"
+                style="@style/textInputLayoutProfile">
+
+                <EditText
+                    android:id="@+id/email"
+                    style="@style/editTextProfile"
+                    android:hint="@string/user_profile_email_hint"
+                    android:text="lenhan1000@gmail.com"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="16dp" />
+
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_address"
+                style="@style/textInputLayoutProfile">
+
+                <EditText
+                    android:id="@+id/address"
+                    style="@style/editTextProfile"
+                    android:hint="@string/user_profile_address_hint"
+                    android:text="lenhan1000@gmail.com"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="16dp" />
+
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_city"
+                style="@style/textInputLayoutProfile">
+
+                <EditText
+                    android:id="@+id/city"
+                    style="@style/editTextProfile"
+                    android:hint="@string/user_profile_city_hint"
+                    android:text="lenhan1000@gmail.com"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="16dp" />
+
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_state"
+                style="@style/textInputLayoutProfile">
+
+                <EditText
+                    android:id="@+id/state"
+                    style="@style/editTextProfile"
+                    android:hint="@string/user_profile_state_hint"
+                    android:text="lenhan1000@gmail.com"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="16dp" />
+
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_country"
+                style="@style/textInputLayoutProfile">
+
+                <EditText
+                    android:id="@+id/country"
+                    style="@style/editTextProfile"
+                    android:hint="@string/user_profile_country_hint"
+                    android:text="lenhan1000@gmail.com"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="16dp" />
+
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_zipCode"
+                style="@style/textInputLayoutProfile">
+
+                <EditText
+                    android:id="@+id/zipCode"
+                    style="@style/editTextProfile"
+                    android:hint="@string/user_profile_zip_code_hint"
+                    android:text="lenhan1000@gmail.com"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="16dp" />
+
+
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

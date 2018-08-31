@@ -21,4 +21,20 @@
 
     //API
     <string name="api_base_url">https://fetch-coins-server.herokuapp.com</string>
+    <string name="api_user_info">/users/info</string>
+    <string name="api_user_update">/</string>
+
+    //User info
+    <string name="user_profile_display_name_hint">Display Name</string>
+    <string name="user_profile_email_hint">Email</string>
+    <string name="user_profile_mobile_hint">Mobile</string>
+    <string name="user_profile_carrier_hint">Carrier</string>
+    <string name="user_profile_address_hint">Address</string>
+    <string name="user_profile_country_hint">Country</string>
+    <string name="user_profile_city_hint">City</string>
+    <string name="user_profile_state_hint">State</string>
+    <string name="user_profile_zip_code_hint">Zip Code</string>
+    <string name="user_profile_country_code_hint">Country Code</string>
+    <string name="title_activity_profile">Profile</string>
+
 </resources>

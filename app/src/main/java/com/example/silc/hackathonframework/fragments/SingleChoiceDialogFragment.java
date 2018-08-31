@@ -32,7 +32,7 @@ public class SingleChoiceDialogFragment extends DialogFragment implements Adapte
 
 
     public interface NoticeDialogListener{
-        public void onDialogTextSelect(int id, String dialog);
+        void onDialogTextSelect(int id, String dialog);
     }
 
     @Override

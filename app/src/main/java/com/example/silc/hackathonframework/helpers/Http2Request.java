@@ -67,7 +67,8 @@ public class Http2Request {
         return call;
     }
 
-    public Call post(String base_url, String route, String json, Callback callback) {
+    public Call post(String base_url, String route, String json,
+                     Callback callback) {
         id = route;
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
@@ -90,13 +91,41 @@ public class Http2Request {
         return call;
     }
 
-    public Call get(String base_url, String route, String token, Callback callback) {
+    public Call get(String base_url, String route, String token,
+                    Callback callback) {
         id = route;
         Request request = new Request.Builder()
                 .header("Authorization", token)
                 .url(base_url + route)
                 .build();
         Call call = client.newCall(request);
+        call.enqueue(callback);
+        return call;
+    }
+
+    public Call put(String base_url, String route, String token, String json) {
+        id = route;
+        RequestBody body = RequestBody.create(JSON, json);
+        Request req = new Request.Builder()
+                .header("Authorization", token)
+                .url(base_url + route)
+                .put(body)
+                .build();
+        Call call = client.newCall(req);
+        call.enqueue(callback);
+        return call;
+    }
+
+    public Call put(String base_url, String route, String token, String json,
+                    Callback callback){
+        id = route;
+        RequestBody body = RequestBody.create(JSON, json);
+        Request req = new Request.Builder()
+                .header("Authorization", token)
+                .url(base_url + route)
+                .put(body)
+                .build();
+        Call call = client.newCall(req);
         call.enqueue(callback);
         return call;
     }

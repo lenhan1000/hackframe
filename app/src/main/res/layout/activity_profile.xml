@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackgroundDark"
+    tools:context=".activities.Profile">
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation"
+        android:transitionName="navigation"
+        android:layout_width="0dp"
+        android:layout_height="?android:attr/actionBarSize"
+        android:layout_marginBottom="1dp"
+        android:background="@color/colorPrimary"
+        app:itemIconTint="@drawable/bottom_nag_colors"
+        app:itemTextColor="@drawable/bottom_nag_colors"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/menu_dashboard_navigation" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:transitionName="appbar"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="@color/colorPrimary"
+        android:elevation="0dp"
+        android:fitsSystemWindows="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:subtitleTextColor="@color/textColorButton"
+        app:titleTextColor="@color/textColor" />
+
+    <FrameLayout
+        android:id="@+id/contentLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/editFloatingBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="15dp"
+            android:clickable="true"
+            android:focusable="auto"
+            app:backgroundTint="@color/colorSecondaryDark"
+            app:srcCompat="@drawable/ic_edit_pastel_64dp" />
+
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:textColorHint="@color/textColor">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:background="@color/colorSecondary"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/profile_image"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/pic_sample_profile"
+                        app:civ_border_color="@color/colorBackgroundDark"
+                        app:civ_border_width="2dp"
+                        app:civ_circle_background_color="@color/colorPrimaryDark" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/input_layout_dislpayName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:paddingTop="10dp">
+
+                        <EditText
+                            android:id="@+id/displayName"
+                            style="@style/editTextProfile"
+                            android:layout_width="wrap_content"
+                            android:gravity="center"
+                            android:text="Nhan Phan"
+                            android:textSize="30sp"
+                            android:textStyle="bold"
+                            tools:layout_editor_absoluteX="16dp"
+                            tools:layout_editor_absoluteY="16dp" />
+
+
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_email"
+                    style="@style/textInputLayoutProfile">
+
+                    <EditText
+                        android:id="@+id/email"
+                        style="@style/editTextProfile"
+                        android:hint="@string/user_profile_email_hint"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="16dp" />
+
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_address"
+                    style="@style/textInputLayoutProfile">
+
+                    <EditText
+                        android:id="@+id/address"
+                        style="@style/editTextProfile"
+                        android:hint="@string/user_profile_address_hint"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="16dp" />
+
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_city"
+                    style="@style/textInputLayoutProfile">
+
+                    <EditText
+                        android:id="@+id/city"
+                        style="@style/editTextProfile"
+                        android:hint="@string/user_profile_city_hint"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="16dp" />
+
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_state"
+                    style="@style/textInputLayoutProfile">
+
+                    <EditText
+                        android:id="@+id/state"
+                        style="@style/editTextProfile"
+                        android:hint="@string/user_profile_state_hint"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="16dp" />
+
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_country"
+                    style="@style/textInputLayoutProfile">
+
+                    <EditText
+                        android:id="@+id/country"
+                        style="@style/editTextProfile"
+                        android:hint="@string/user_profile_country_hint"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="16dp" />
+
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_zipCode"
+                    style="@style/textInputLayoutProfile">
+
+                    <EditText
+                        android:id="@+id/zipCode"
+                        style="@style/editTextProfile"
+                        android:hint="@string/user_profile_zip_code_hint"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="16dp" />
+
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+        </ScrollView>
+    </FrameLayout>
+</android.support.constraint.ConstraintLayout>

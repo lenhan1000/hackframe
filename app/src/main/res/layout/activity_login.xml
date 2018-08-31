@@ -28,7 +28,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread" />
 
     <EditText
         android:id="@+id/password"
@@ -69,10 +70,9 @@
         style="@style/buttonStandard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="100dp"
         android:layout_marginEnd="14dp"
         android:layout_marginStart="14dp"
-        android:layout_marginTop="33dp"
         android:text="Log In"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +83,8 @@
     <TextView
         android:id="@+id/forgetPassLink"
         android:layout_width="160dp"
-        android:layout_height="17dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Forget your password?"
         android:textColor="@drawable/text_selectors"
         android:textSize="14dp"
@@ -96,7 +97,7 @@
         android:layout_width="148dp"
         android:layout_height="22dp"
         android:layout_marginStart="110dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:text="Don't have an account?"
         android:textColor="@color/textColor"
         android:textSize="14dp"
@@ -109,7 +110,7 @@
         android:layout_width="68dp"
         android:layout_height="22dp"
         android:layout_marginEnd="110dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:text="Sign Up"
         android:textColor="@drawable/text_selectors"
         android:textSize="14dp"

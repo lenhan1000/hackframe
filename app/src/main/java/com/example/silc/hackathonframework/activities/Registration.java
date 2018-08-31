@@ -18,7 +18,9 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.example.silc.hackathonframework.R;
 import com.example.silc.hackathonframework.fragments.SingleChoiceDialogFragment;
+import com.example.silc.hackathonframework.helpers.GeographyDialogWrapper;
 import com.example.silc.hackathonframework.helpers.Http2Request;
+import com.example.silc.hackathonframework.helpers.SingleChoiceDialogWrapper;
 import com.example.silc.hackathonframework.helpers.Utils;
 import com.example.silc.hackathonframework.models.*;
 import com.hbb20.CountryCodePicker;
@@ -32,11 +34,8 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
         View.OnClickListener, Http2Request.Http2RequestListener{
     private static final String TAG = "activities.Registration";
     private static final boolean DEBUG = false;
-
+    private final Context context = this;
     private int dialog_id;
-    private int country_id;
-    private int state_id;
-    private ArrayList<State> states;
     private User user;
 
     private EditText mEmailField;
@@ -57,13 +56,14 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
     private TextView mStateList;
     private TextView mCityList;
 
+    //Wrapper
+    private GeographyDialogWrapper geoWrapper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         //Variables
-        country_id = 0;
-        state_id = 0;
         user = new User();
 
         //Requests
@@ -71,6 +71,8 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
         req = new Http2Request(this);
         mContentFrame = findViewById(R.id.view);
         inflate_basic();
+
+        geoWrapper = new GeographyDialogWrapper(this);
     }
 
     @Override
@@ -92,19 +94,19 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
         }
         if (i == R.id.country){
             dialog_id = R.id.country;
-            pop_country_dialog();
+            geoWrapper.popCountryDialog();
 
         }if (i == R.id.state) {
             dialog_id = R.id.state;
-            if (country_id > 0)
-                pop_state_dialog(country_id);
+            if (geoWrapper.country_id > 0)
+                geoWrapper.popStateDialog();
             else
                 Toast.makeText(Registration.this, "Select Country First",
                         Toast.LENGTH_SHORT).show();
         }if (i == R.id.city) {
             dialog_id = R.id.city;
-            if(state_id > 0 || country_id > 0)
-                pop_city_dialog(state_id);
+            if(geoWrapper.state_id > 0 || geoWrapper.country_id > 0)
+                geoWrapper.popCityDialog();
             else
                 Toast.makeText(Registration.this, "Select Country or State First",
                         Toast.LENGTH_SHORT).show();
@@ -115,81 +117,13 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
     public void onDialogTextSelect(int id, String dialog){
         if (dialog_id == R.id.country){
             mCountryList.setText(dialog);
-            country_id = id + 1;
-            Log.d(TAG, "Country ID: " + Integer.toString(country_id));
+            geoWrapper.country_id = id + 1;
         }else if (dialog_id == R.id.state){
             mStateList.setText(dialog);
-            state_id = State.stateId(states, dialog);
-            Log.d(TAG, "State ID: " + Integer.toString(state_id));
+            geoWrapper.state_id = State.stateId(geoWrapper.states, dialog);
         }else if (dialog_id == R.id.city){
             mCityList.setText(dialog);
         }
-    }
-
-    //DIALOG FUNCTIONS
-
-    private void pop_country_dialog(){
-        ArrayList<Country> countries;
-        String jsonStr = Utils.loadJSONFromAsset(this, "countries.json");
-        try {
-            countries = Country.jsonToCountry(Utils
-                    .getArrayListFromJSONArray(new JSONObject(jsonStr)
-                            .getJSONArray("countries")));
-        } catch (JSONException e) {
-            Log.e(TAG, "Json parsing error: " + e.getMessage());
-            return;
-        }
-        ArrayList<String> countries_name = Country.toArrayStrings(countries);
-        SingleChoiceDialogFragment dialog = new SingleChoiceDialogFragment();
-        Bundle data = new Bundle();
-        data.putStringArrayList("list", countries_name);
-        data.putString("title", "Select a Country");
-        dialog.setArguments(data);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        dialog.show(ft,null);
-    }
-
-    private void pop_state_dialog(int cid){
-        String jsonStr = Utils.loadJSONFromAsset(this, "states.json");
-        try {
-            states = State.jsonToState(Utils
-                    .getArrayListFromJSONArray(new JSONObject(jsonStr)
-                            .getJSONArray("states")));
-        } catch (JSONException e) {
-            Log.e(TAG, "Json parsing error: " + e.getMessage());
-            return;
-        }
-        states = State.countryToStates(states, cid);
-        ArrayList<String> states_name = State.toArrayStrings(states);
-        SingleChoiceDialogFragment dialog = new SingleChoiceDialogFragment();
-        Bundle data = new Bundle();
-        data.putStringArrayList("list", states_name);
-        data.putString("title", "Select a State/Region");
-        dialog.setArguments(data);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        dialog.show(ft,null);
-    }
-
-    private void pop_city_dialog(int sid){
-        ArrayList<City> cities;
-        String jsonStr = Utils.loadJSONFromAsset(this, "cities.json");
-        try {
-            cities = City.jsonToCity(Utils
-                    .getArrayListFromJSONArray(new JSONObject(jsonStr)
-                            .getJSONArray("cities")));
-        } catch (JSONException e) {
-            Log.e(TAG, "Json parsing error: " + e.getMessage());
-            return;
-        }
-        cities = City.stateToCities(cities, sid);
-        ArrayList<String> cities_name = City.toArrayStrings(cities);
-        SingleChoiceDialogFragment dialog = new SingleChoiceDialogFragment();
-        Bundle data = new Bundle();
-        data.putStringArrayList("list", cities_name);
-        data.putString("title", "Select a City");
-        dialog.setArguments(data);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        dialog.show(ft,null);
     }
 
     //INFLATE FUNCTIONS
