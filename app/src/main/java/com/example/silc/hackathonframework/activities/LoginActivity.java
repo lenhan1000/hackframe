@@ -124,9 +124,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try {
             boolean success = res.getBoolean("success");
             if (!success) {
-                Toast.makeText(this, "Unsucessful Login",
-                        Toast.LENGTH_SHORT).show();
-                Log.d(TAG, res.getString("message"));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Unsuccessful Login",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                Log.d(TAG, res.getString("msg"));
             } else {
                 User.processLogin(email, res.getString("token"), this);
 

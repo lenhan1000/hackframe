@@ -20,9 +20,9 @@
     <string name="user_preference_email">email</string>
 
     //API
-    <string name="api_base_url">https://fetch-coins-server.herokuapp.com</string>
+    <string name="api_base_url">http://172.19.0.1:3000</string>
     <string name="api_user_info">/users/info</string>
-    <string name="api_user_update">/</string>
+    <string name="api_user_update">/users/update/info</string>
 
     //User info
     <string name="user_profile_display_name_hint">Display Name</string>

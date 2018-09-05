@@ -185,12 +185,22 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
                 }
                 Log.d(TAG, "nextViewInit");
                 //Construct a User object
-                user.setAddress(mAddressField.getText().toString());
-                user.setCountry(mCountryList.getText().toString());
-                user.setState(mStateList.getText().toString());
-                user.setCity(mCityList.getText().toString());
-                user.setZipCode(mZipCodeField.getText().toString());
-                inflate_cred();
+                try {
+                    JSONObject country = new JSONObject();
+                    JSONObject state = new JSONObject();
+                    country.put("id", geoWrapper.country_id);
+                    country.put("name", mCountryList.getText().toString());
+                    state.put("id", geoWrapper.state_id);
+                    state.put("name", mStateList.getText().toString());
+                    user.setAddress(mAddressField.getText().toString());
+                    user.setCountry(country);
+                    user.setState(state);
+                    user.setCity(mCityList.getText().toString());
+                    user.setZipCode(mZipCodeField.getText().toString());
+                    inflate_cred();
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -319,7 +329,7 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
     public void onRequestFinished(String id, JSONObject res){
         try {
             boolean success = res.getBoolean("success");
-            if (!success) Log.d(TAG, res.getString("message"));
+            if (!success) Log.d(TAG, res.getString("msg"));
             else {
                 if (id == registerUrl)
                     login(user.getEmail(), mPasswordField.getText().toString());
@@ -330,7 +340,6 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
                     finish();
                 }
             }
-
         }catch (JSONException e){
             Log.e(TAG, e.getMessage());
         }

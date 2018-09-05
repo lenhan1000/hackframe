@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -35,6 +36,7 @@ import org.json.JSONObject;
 public class Profile extends AppCompatActivity implements View.OnClickListener,
         Http2Request.Http2RequestListener, SingleChoiceDialogFragment.NoticeDialogListener{
     private static final String TAG = "activities.Profile";
+    private static final boolean DEBUG = true;
     private BottomNavigationView navigation;
     private FloatingActionButton fab;
     private boolean boolFab;
@@ -131,14 +133,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
                     Toast.makeText(context, "Select to Edit",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    v.clearAnimation();
-                    fab.setImageResource(R.drawable.ic_edit_pastel_64dp);
-                    mDisplayName.setFocusable(false);
-                    mEmail.setFocusable(false);
-                    mAddress.setFocusable(false);
-                    mZipCode.setFocusable(false);
-                    boolFab = false;
-                    saveUser();
+                    try {
+                        saveUser();
+                    }catch(JSONException e){
+                        Log.e(TAG, "Json parsing error: " + e.getMessage());
+                        Toast.makeText(context, "An error occured",
+                                Toast.LENGTH_SHORT).show();
+                    }
                  }
                 break;
             case R.id.country:
@@ -164,34 +165,54 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
     public void onRequestFinished(String id, JSONObject body){
         if (id.equals(getString(R.string.api_user_info))){
             try {
+                final String msg = body.getString("msg");
                 if (body.getBoolean("success")) {
-                    JSONObject info = body.getJSONObject("message");
+                    JSONObject info = body.getJSONObject("msg");
                     loadInfo(info);
                 }else{
-                    Log.e(TAG, body.getString("message"));
-                    Toast.makeText(context, body.getString("message"),
-                            Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, body.getString("msg"));
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, msg,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                 }
             }catch (JSONException e){
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
-                Toast.makeText(context, "An error occurred",
-                        Toast.LENGTH_SHORT).show();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "An error occured",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
         else if(id.equals(getString(R.string.api_user_update))) {
             try {
+                final String msg = body.getString("msg");
                 if (body.getBoolean("success")) {
-                    Toast.makeText(context, "Saved Successful",
-                            Toast.LENGTH_SHORT).show();
+                    saveUserUiUpdate();
                 } else {
-                    Log.e(TAG, body.getString("message"));
-                    Toast.makeText(context, body.getString("message"),
-                            Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, body.getString("msg"));
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, msg,
+                                    Toast.LENGTH_SHORT).show();                        }
+                    });
                 }
             }catch (JSONException e){
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
-                Toast.makeText(context, "An error occurred",
-                        Toast.LENGTH_SHORT).show();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "An error occurred",
+                                Toast.LENGTH_SHORT).show();                    }
+                });
             }
         }
     }
@@ -215,17 +236,29 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
                 context.getString(R.string.user_preference_email),
                 "",
                 context.getString(R.string.user_preference));
+        user.setEmail(email);
+        try {
+            user.setDisplayName(info.getString("displayName"));
+            user.setAddress(info.getString("address"));
+            user.setCity(info.getString("city"));
+            user.setZipCode(info.getString("zipCode"));
+            user.setCountry(new JSONObject(info.getString("country")));
+            user.setState(new JSONObject(info.getString("state")));
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mEmail.setText(email);
                 try {
-                    mDisplayName.setText(info.getString("displayName"));
-                    mAddress.setText(info.getString("address"));
-                    mCity.setText(info.getString("city"));
-                    mState.setText(info.getString("state"));
-                    mCountry.setText(info.getString("country"));
-                    mZipCode.setText(info.getString("zipCode"));
+                    mDisplayName.setText(user.getDisplayName());
+                    mAddress.setText(user.getAddress());
+                    mCity.setText(user.getCity());
+                    mState.setText(user.getState().getString("name"));
+                    mCountry.setText(user.getCountry().getString("name"));
+                    mZipCode.setText(user.getZipCode());
                 }catch(JSONException e) {
                     Log.e(TAG, "Json parsing err: " + e.getMessage());
                 }
@@ -233,25 +266,96 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
         });
     }
 
-    private void saveUser(){
-        validate();
+    private void saveUser() throws JSONException{
+        if (!validate()){ return; }
         user.setDisplayName(mDisplayName.getText().toString());
         user.setAddress(mAddress.getText().toString());
         user.setCity(mCity.getText().toString());
-        user.setState(mState.getText().toString());
-        user.setCountry(mCountry.getText().toString());
+        //user.setState(mState.getText().toString());
+        //user.setCountry(mCountry.getText().toString());
         user.setZipCode(mZipCode.getText().toString());
         user.setEmail(Utils.getStringSharedPreferences(context,
                 context.getString(R.string.user_preference_email),
                 "",
                 context.getString(R.string.user_preference)));
+        JSONObject body = new JSONObject();
+        body.put("info", user.toJSON().toString());
         Http2Request req = new Http2Request(context);
         req.put(getString(R.string.api_base_url), getString(R.string.api_user_update),
-                User.getToken(context),user.toJSON().toString());
+                User.getToken(context), body.toString());
     }
 
-    private void validate(){
-        //TODO
+    private void saveUserUiUpdate(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.editFloatingBtn).clearAnimation();
+                fab.setImageResource(R.drawable.ic_edit_pastel_64dp);
+                mDisplayName.setFocusable(false);
+                mEmail.setFocusable(false);
+                mAddress.setFocusable(false);
+                mZipCode.setFocusable(false);
+                boolFab = false;
+                Toast.makeText(context, "Saved Successful",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private boolean validate(){
+        boolean valid = true;
+
+        String displayName = mDisplayName.getText().toString();
+        if (TextUtils.isEmpty(displayName)) {
+            mDisplayName.setError("Required.");
+            valid=false;
+        }
+
+//        String mobile = mMobile.getText().toString();
+//        if (TextUtils.isEmpty(mobile)) {
+//            mMobile.setError("Required.");
+//            valid=false;
+//        }
+//
+//        String carrier = mCarrier.getText().toString();
+//        if (TextUtils.isEmpty(carrier)) {
+//            mCarrier.setError("Required.");
+//            valid=false;
+//        }
+        String address = mAddress.getText().toString();
+        if (TextUtils.isEmpty(address)) {
+            mAddress.setError("Required.");
+            valid=false;
+        }
+
+        String country = mCountry.getText().toString();
+        if (TextUtils.isEmpty(country)) {
+            mCountry.setError("Required.");
+            valid=false;
+        }
+
+        String city = mCity.getText().toString();
+        if (TextUtils.isEmpty(city)) {
+            mCity.setError("Required.");
+            valid=false;
+        }
+
+        String state = mState.getText().toString();
+        if (TextUtils.isEmpty(state)) {
+            mState.setError("Required.");
+            valid=false;
+        }
+
+        String zipCode = mZipCode.getText().toString();
+        if (TextUtils.isEmpty(zipCode)) {
+            mZipCode.setError("Required.");
+            valid=false;
+        }else if(!Utils.isValidZipCode(zipCode)){
+            mZipCode.setError("Invalid Zip.");
+            valid = false;
+        }
+
+        return DEBUG||valid;
     }
 
 }

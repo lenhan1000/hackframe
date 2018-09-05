@@ -19,7 +19,7 @@ public class User implements Parcelable{
     private static final String TAG = "models.Users";
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public User createFromParcel(Parcel in) {
+        public User createFromParcel(Parcel in){
             return new User(in);
         }
 
@@ -33,8 +33,8 @@ public class User implements Parcelable{
     private String mobilePhone;
     private String carrier;
     private String address;
-    private String country;
-    private String state;
+    private JSONObject country;
+    private JSONObject state;
     private String city;
     private String zipCode;
     private String countryCode;
@@ -52,7 +52,7 @@ public class User implements Parcelable{
         countryCode= null;
     }
     public User(String displayName, String mobilePhone, String carrier, String zipCode,
-                String address, String country, String state, String city,
+                String address, JSONObject country, JSONObject state, String city,
                 String countryCode, String email){
         this.displayName = displayName;
         this.mobilePhone = mobilePhone;
@@ -76,9 +76,9 @@ public class User implements Parcelable{
 
     public String getAddress(){ return this.address; }
 
-    public String getCountry(){ return this.country; }
+    public JSONObject getCountry() { return this.country; }
 
-    public String getState(){ return this.state; }
+    public JSONObject getState(){ return this.state; }
 
     public String getCity(){ return this.city; }
 
@@ -96,9 +96,9 @@ public class User implements Parcelable{
 
     public void setAddress(String arg){  this.address = arg; }
 
-    public void setCountry(String arg){  this.country = arg; }
+    public void setCountry(JSONObject arg){  this.country = arg; }
 
-    public void setState(String arg){  this.state = arg; }
+    public void setState(JSONObject arg){  this.state = arg; }
             
     public void setCity(String arg){  this.city = arg; }
 
@@ -107,16 +107,20 @@ public class User implements Parcelable{
     public void setCountryCode(String arg){  this.zipCode = arg; }
 
     //Parcelling
-    public User(Parcel in){
+    public User(Parcel in) {
         this.displayName = in.readString();
         this.mobilePhone = in.readString();
         this.carrier = in.readString();
         this.address = in.readString();
-        this.country = in.readString();
-        this.state = in.readString();
-        this.city = in.readString();
         this.zipCode = in.readString();
         this.countryCode = in.readString();
+        this.city = in.readString();
+        try {
+            this.country = new JSONObject(in.readString());
+            this.state = new JSONObject(in.readString());
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -130,41 +134,12 @@ public class User implements Parcelable{
         dest.writeString(this.carrier);
         dest.writeString(this.address);
         dest.writeString(this.countryCode);
-        dest.writeString(this.country);
-        dest.writeString(this.state);
-        dest.writeString(this.city);
+        dest.writeString(this.country.toString());
+        dest.writeString(this.state.toString());
+        dest.writeString(this.city.toString());
         dest.writeString(this.zipCode);
     }
 
-    //Util Functions
-
-    public void setStringKey(String key, String value){
-        switch (key){
-            case "email":
-                this.setEmail(value); break;
-            case "displayName":
-                this.setDisplayName(value); break;
-            case "mobilePhone":
-                this.setmobilePhone(value); break;
-            case "carrier":
-                this.setCarrier(value); break;
-            case "address":
-                this.setAddress(value); break;
-            case "country":
-                this.setCountry(value); break;
-            case "state":
-                this.setState(value); break;
-            case "city":
-                this.setCity(value); break;
-            case "zipCode":
-                this.setZipCode(value); break;
-            case "countryCode":
-                this.setCountryCode(value); break;
-            default:
-                Log.e(TAG,"invalid key.");
-        }
-
-    }
 
     public String toString(){
         return "Student{" +
