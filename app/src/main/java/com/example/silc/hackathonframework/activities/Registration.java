@@ -186,15 +186,11 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
                 Log.d(TAG, "nextViewInit");
                 //Construct a User object
                 try {
-                    JSONObject country = new JSONObject();
-                    JSONObject state = new JSONObject();
-                    country.put("id", geoWrapper.country_id);
-                    country.put("name", mCountryList.getText().toString());
-                    state.put("id", geoWrapper.state_id);
-                    state.put("name", mStateList.getText().toString());
                     user.setAddress(mAddressField.getText().toString());
-                    user.setCountry(country);
-                    user.setState(state);
+                    user.setCountry(geoWrapper.country_id,
+                            mCountryList.getText().toString());
+                    user.setState(geoWrapper.state_id,
+                            mStateList.getText().toString());
                     user.setCity(mCityList.getText().toString());
                     user.setZipCode(mZipCodeField.getText().toString());
                     inflate_cred();

@@ -36,7 +36,7 @@ import org.json.JSONObject;
 public class Profile extends AppCompatActivity implements View.OnClickListener,
         Http2Request.Http2RequestListener, SingleChoiceDialogFragment.NoticeDialogListener{
     private static final String TAG = "activities.Profile";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private BottomNavigationView navigation;
     private FloatingActionButton fab;
     private boolean boolFab;
@@ -156,6 +156,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
                 break;
             case R.id.city:
                 if(boolFab) {
+                    dialog_id = R.id.city;
                     geoDialog.popCityDialog();
                 }
         }
@@ -219,35 +220,45 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
 
     @Override
     public void onDialogTextSelect(int id, String dialog){
-        if (dialog_id == R.id.country){
-            mCountry.setText(dialog);
-            geoDialog.country_id = id + 1;
-        }else if (dialog_id == R.id.state){
-            mState.setText(dialog);
-            geoDialog.state_id = State.stateId(geoDialog.states, dialog);
-        }else if (dialog_id == R.id.city){
-            mCity.setText(dialog);
+        try {
+            if (dialog_id == R.id.country) {
+                if(!user.getCountry().getString("name").equals(dialog)){
+                    mCountry.setText(dialog);
+                    geoDialog.country_id = id + 1;
+                    mState.setText("Select");
+                    mCity.setText("Select");
+                }
+            } else if (dialog_id == R.id.state) {
+                if(!user.getCountry().getString("name").equals(dialog)) {
+                    mState.setText(dialog);
+                    geoDialog.state_id = State.stateId(geoDialog.states, dialog);
+                    mCity.setText("Select");
+                }
+            } else if (dialog_id == R.id.city) {
+                mCity.setText(dialog);
+            }
+        }catch(JSONException e){
+            e.printStackTrace();
         }
     }
 
-    public void loadInfo(JSONObject u){
+    public void loadInfo(JSONObject u) throws JSONException{
         final JSONObject info = u;
         final String email = Utils.getStringSharedPreferences(context,
                 context.getString(R.string.user_preference_email),
                 "",
                 context.getString(R.string.user_preference));
         user.setEmail(email);
-        try {
-            user.setDisplayName(info.getString("displayName"));
-            user.setAddress(info.getString("address"));
-            user.setCity(info.getString("city"));
-            user.setZipCode(info.getString("zipCode"));
-            user.setCountry(new JSONObject(info.getString("country")));
-            user.setState(new JSONObject(info.getString("state")));
-
-        }catch (JSONException e){
-            e.printStackTrace();
-        }
+        //Set up user object with info
+        user.setDisplayName(info.getString("displayName"));
+        user.setAddress(info.getString("address"));
+        user.setCity(info.getString("city"));
+        user.setZipCode(info.getString("zipCode"));
+        user.setCountry(info.getString("country"));
+        user.setState(info.getString("state"));
+        geoDialog.state_id = user.getState().getInt("id");
+        geoDialog.country_id = user.getCountry().getInt("id");
+        //Run thread to change info on UI
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -271,15 +282,17 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
         user.setDisplayName(mDisplayName.getText().toString());
         user.setAddress(mAddress.getText().toString());
         user.setCity(mCity.getText().toString());
-        //user.setState(mState.getText().toString());
-        //user.setCountry(mCountry.getText().toString());
+        user.setState(geoDialog.state_id,
+                mState.getText().toString());
+        user.setCountry(geoDialog.country_id,
+                mCountry.getText().toString());
         user.setZipCode(mZipCode.getText().toString());
         user.setEmail(Utils.getStringSharedPreferences(context,
                 context.getString(R.string.user_preference_email),
                 "",
                 context.getString(R.string.user_preference)));
         JSONObject body = new JSONObject();
-        body.put("info", user.toJSON().toString());
+        body.put("info", user.toJSON());
         Http2Request req = new Http2Request(context);
         req.put(getString(R.string.api_base_url), getString(R.string.api_user_update),
                 User.getToken(context), body.toString());
@@ -335,13 +348,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
         }
 
         String city = mCity.getText().toString();
-        if (TextUtils.isEmpty(city)) {
+        if (city.equals("Select")) {
             mCity.setError("Required.");
             valid=false;
         }
 
         String state = mState.getText().toString();
-        if (TextUtils.isEmpty(state)) {
+        if (state.equals("Select")) {
             mState.setError("Required.");
             valid=false;
         }

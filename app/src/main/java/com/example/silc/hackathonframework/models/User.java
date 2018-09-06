@@ -96,9 +96,27 @@ public class User implements Parcelable{
 
     public void setAddress(String arg){  this.address = arg; }
 
-    public void setCountry(JSONObject arg){  this.country = arg; }
+    public void setCountry(int id, String name) throws JSONException{
+        JSONObject c = new JSONObject();
+        c.put("id", id);
+        c.put("name", name);
+        this.country = c;
+    }
 
-    public void setState(JSONObject arg){  this.state = arg; }
+    public void setCountry(String arg) throws JSONException{
+        this.country = new JSONObject(arg);
+    }
+
+    public void setState(int id, String name) throws  JSONException{
+        JSONObject s = new JSONObject();
+        s.put("id", id);
+        s.put("name", name);
+        this.state = s;
+    }
+
+    public void setState(String arg) throws JSONException{
+        this.state = new JSONObject(arg);
+    }
             
     public void setCity(String arg){  this.city = arg; }
 
