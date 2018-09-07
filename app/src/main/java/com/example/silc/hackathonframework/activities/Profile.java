@@ -2,11 +2,13 @@ package com.example.silc.hackathonframework.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
@@ -38,20 +40,20 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
     private static final String TAG = "activities.Profile";
     private static final boolean DEBUG = false;
     private BottomNavigationView navigation;
+    private Toolbar actionBar;
     private FloatingActionButton fab;
     private boolean boolFab;
     private int dialog_id;
     private User user;
     private Context context;
 
-    private Toolbar myToolbar;
-    private EditText mEmail;
-    private EditText mDisplayName;
-    private EditText mAddress;
+    private TextInputEditText mEmail;
+    private TextInputEditText mDisplayName;
+    private TextInputEditText mAddress;
     private TextView mCity;
     private TextView mState;
     private TextView mCountry;
-    private EditText mZipCode;
+    private TextInputEditText mZipCode;
     private GeographyDialogWrapper geoDialog;
 
 
@@ -61,23 +63,33 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_profile:
+                case R.id.navigation_profile: {
                     return true;
-                case R.id.navigation_dashboard:
+                }
+                case R.id.navigation_dashboard: {
 
-                    Pair<View, String> p1 = Pair.create((View) myToolbar, "appbar");
+                    Pair<View, String> p1 = Pair.create((View) actionBar, "appbar");
                     Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
                     ActivityOptionsCompat options = ActivityOptionsCompat.
                             makeSceneTransitionAnimation(Profile.this, p1, p2);
                     startActivity(new Intent(context, Dashboard.class), options.toBundle());
 
                     return true;
-                case R.id.navigation_pets:
+                }
+                case R.id.navigation_pets: {
+                    Pair<View, String> p1 = Pair.create((View) actionBar, "appbar");
+                    Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
+                    ActivityOptionsCompat options = ActivityOptionsCompat.
+                            makeSceneTransitionAnimation(Profile.this, p1, p2);
+                    startActivity(new Intent(context, PetProfiles.class), options.toBundle());
                     return true;
-                case R.id.navigation_settings:
+                }
+                case R.id.navigation_settings: {
                     return true;
-                case R.id.navigation_more:
+                }
+                case R.id.navigation_more: {
                     return true;
+                }
             }
             return false;
         }
@@ -93,8 +105,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_profile);
-        myToolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
+        actionBar = findViewById(R.id.actionBar);
+        setSupportActionBar(actionBar);
         fab = findViewById(R.id.editFloatingBtn);
         fab.setOnClickListener(this);
 

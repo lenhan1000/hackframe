@@ -28,7 +28,9 @@
         <activity
             android:name=".activities.Profile"
             android:label="@string/title_activity_profile"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activities.PetProfiles" />
+        <activity android:name=".activities.PetRegistration"></activity>
     </application>
 
 </manifest>

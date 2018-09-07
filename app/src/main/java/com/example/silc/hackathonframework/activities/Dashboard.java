@@ -35,7 +35,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     private ConstraintLayout mContentFrame;
     private Context context = this;
     private BottomNavigationView navigation;
-    private Toolbar myToolbar;
+    private Toolbar actionBar;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -43,25 +43,32 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_profile:
-                    Pair<View, String> p1 = Pair.create((View) myToolbar, "appbar");
+                case R.id.navigation_profile: {
+                    Pair<View, String> p1 = Pair.create((View) actionBar, "appbar");
                     Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
                     ActivityOptionsCompat options = ActivityOptionsCompat.
                             makeSceneTransitionAnimation(Dashboard.this, p1, p2);
                     startActivity(new Intent(context, Profile.class), options.toBundle());
-
-                    User.getUserInfo(context);
                     return true;
-                case R.id.navigation_pets:
+                }
+                case R.id.navigation_pets: {
+                    Pair<View, String> p1 = Pair.create((View) actionBar, "appbar");
+                    Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
+                    ActivityOptionsCompat options = ActivityOptionsCompat.
+                            makeSceneTransitionAnimation(Dashboard.this, p1, p2);
+                    startActivity(new Intent(context, PetProfiles.class), options.toBundle());
                     return true;
-                case R.id.navigation_settings:
+                }
+                case R.id.navigation_settings: {
                     mContentFrame.removeAllViews();
                     LayoutInflater.from(Dashboard.this).inflate(R.layout.activity_settings, mContentFrame);
 
                     Dashboard.this.findViewById(R.id.button2).setOnClickListener(Dashboard.this);
                     return true;
-                case R.id.navigation_more:
+                }
+                case R.id.navigation_more: {
                     return true;
+                }
             }
             return false;
         }
@@ -90,8 +97,9 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        myToolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
+        navigation.setSelectedItemId(R.id.navigation_dashboard);
+        actionBar = findViewById(R.id.actionBar);
+        setSupportActionBar(actionBar);
         getSupportActionBar().setTitle("Champ");
         getSupportActionBar().setSubtitle("Last Synced " + Utils.getCurrentTime());
         mContentFrame = findViewById(R.id.content);

@@ -22,12 +22,12 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/actionBar"
         app:layout_constraintVertical_bias="1.0"
         app:menu="@menu/menu_dashboard_navigation" />
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
+        android:id="@+id/actionBar"
         android:transitionName="appbar"
         android:layout_width="0dp"
         android:layout_height="56dp"
@@ -47,7 +47,7 @@
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/actionBar">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/frameHealth"

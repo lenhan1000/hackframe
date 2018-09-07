@@ -36,5 +36,6 @@
     <string name="user_profile_zip_code_hint">Zip Code</string>
     <string name="user_profile_country_code_hint">Country Code</string>
     <string name="title_activity_profile">Profile</string>
+    <string name="title_activity_pet_registration">PetRegistration</string>
 
 </resources>
