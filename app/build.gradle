@@ -37,6 +37,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.google.code.gson:gson:2.8.0'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'com.github.AigeStudio:WheelPicker:beta'
 }
 
 apply plugin: 'com.google.gms.google-services'

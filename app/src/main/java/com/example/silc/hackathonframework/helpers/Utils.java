@@ -7,6 +7,8 @@ import android.util.Log;
 
 import java.io.IOException;
 import org.json.*;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
@@ -25,15 +27,26 @@ public final class Utils{
         return json;
     }
 
-    public static ArrayList<JSONObject> getArrayListFromJSONArray(JSONArray jsonArray)
+    public static ArrayList<JSONObject> getArrayListFromJSONArray(JSONArray arr)
             throws JSONException{
         ArrayList<JSONObject> aList=new ArrayList<JSONObject>();
-        if (jsonArray != null) {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                aList.add(jsonArray.getJSONObject(i));
+        if (arr != null) {
+            for (int i = 0; i < arr.length(); i++) {
+                aList.add(arr.getJSONObject(i));
             }
         }
         return  aList;
+    }
+
+    public static String[] getStringArrayFromJSONArray(JSONArray arr)
+            throws JSONException{
+        String[] strs = new String[arr.length()];
+        if(arr != null){
+            for(int i = 0; i < arr.length(); i++){
+                strs[i] = arr.getString(i);
+            }
+        }
+        return strs;
     }
 
     public static boolean isValidEmail(String email){

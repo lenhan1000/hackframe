@@ -15,7 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 @IgnoreExtraProperties
-public class User implements Parcelable{
+public class User extends Model implements Parcelable{
     private static final String TAG = "models.Users";
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -211,14 +211,7 @@ public class User implements Parcelable{
         if (token.isEmpty()) return;
         Http2Request req = new Http2Request(context);
         String infoUrl = context.getResources().getString(R.string.api_user_info);
-        req.get(context.getString(R.string.api_base_url), infoUrl,
+        req.get(req.baseUrl, infoUrl,
                 token);
-    }
-
-    public static String getToken(Context context){
-        return Utils.getStringSharedPreferences(context,
-                context.getString(R.string.user_preference_token),
-                "",
-                context.getString(R.string.user_preference));
     }
 }

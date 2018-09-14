@@ -3,6 +3,8 @@ package com.example.silc.hackathonframework.helpers;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.silc.hackathonframework.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,6 +25,7 @@ public class Http2Request {
     private String id;
     private JSONObject res;
     private Context context;
+    public String baseUrl;
     private OkHttpClient client = new OkHttpClient();
     public Http2RequestListener notice;
     public Callback callback = new Callback(){
@@ -53,6 +56,7 @@ public class Http2Request {
     public Http2Request(Context context){
         this.context = context;
         this.notice = (Http2RequestListener) context;
+        this.baseUrl = context.getResources().getString(R.string.api_base_url);
     }
 
     public Call post(String base_url, String route, String json){

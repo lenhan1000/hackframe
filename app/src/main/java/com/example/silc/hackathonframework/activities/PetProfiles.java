@@ -81,7 +81,8 @@ public class PetProfiles extends AppCompatActivity implements Http2Request.Http2
         public void onClick(View v){
             switch(v.getId()){
                 case R.id.FloatingBtn: {
-
+                    startActivity(new Intent(context, PetRegistration.class));
+                    finish();
                 }
             }
         }
@@ -91,6 +92,7 @@ public class PetProfiles extends AppCompatActivity implements Http2Request.Http2
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pet_profiles);
+        viewArray = new ArrayList<LinearLayout>();
         //Set up appbar, bottom nag, etc
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
