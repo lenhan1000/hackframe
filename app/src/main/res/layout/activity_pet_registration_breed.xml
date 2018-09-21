@@ -28,6 +28,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/pet_profile_breed_hint"
+        android:textColor="@color/textColor"
         android:gravity="center"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/infoView"

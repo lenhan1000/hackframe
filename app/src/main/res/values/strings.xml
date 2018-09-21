@@ -25,6 +25,8 @@
     <string name="api_user_update">/users/update/info</string>
     <string name="api_pet_dog_breed">/pets/dogs/breed/all</string>
     <string name="api_pet_cat_breed">/pets/cats/breed/all</string>
+    <string name="api_pet_create">/pets/create</string>
+    <string name="api_user_pets">/users/pets</string>
 
     //User info
     <string name="user_profile_display_name_hint">Display Name</string>
@@ -48,4 +50,7 @@
     <string name="pet_profile_type_hint">Pet Type</string>
     <string name="pet_profile_gender_hint">Gender</string>
     <string name="pet_profile_age_hint">Age (in years)</string>
+    <string name="pet_profile_weight_hint">Weight</string>
+    <string name="pet_profile_birth_hint">Birthday</string>
+    <string name="pet_profile_spayed_hint">Spayed/Neutered</string>
 </resources>

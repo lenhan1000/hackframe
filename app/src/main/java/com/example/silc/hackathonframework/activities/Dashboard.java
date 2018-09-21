@@ -30,6 +30,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.Build;
+
 public class Dashboard extends AppCompatActivity implements View.OnClickListener, Http2Request.Http2RequestListener{
     private static final String TAG = "activities.Dashboard";
     private ConstraintLayout mContentFrame;
@@ -103,6 +105,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         getSupportActionBar().setTitle("Champ");
         getSupportActionBar().setSubtitle("Last Synced " + Utils.getCurrentTime());
         mContentFrame = findViewById(R.id.content);
+        printINFO();
     }
 
     @Override
@@ -135,5 +138,27 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     @Override
     public void onRequestFinished(String id, JSONObject user){
         if (user != null) Log.d(TAG, user.toString());
+    }
+
+    private void printINFO(){
+        Log.d(TAG,  "WHAT" + Build.VERSION.BASE_OS);
+        Log.d(TAG, "SDK INT" + Integer.toString(Build.VERSION.SDK_INT));
+        Log.d(TAG, Build.BOARD);
+        Log.d(TAG, Build.BRAND);
+        Log.d(TAG, Build.BOOTLOADER);
+        Log.d(TAG, Build.DEVICE);
+        Log.d(TAG, Build.DISPLAY);
+        Log.d(TAG, Build.FINGERPRINT);
+        Log.d(TAG, Build.HARDWARE);
+        Log.d(TAG, Build.HOST);
+        Log.d(TAG, Build.ID);
+        Log.d(TAG, Build.MANUFACTURER);
+        Log.d(TAG, Build.MODEL);
+        Log.d(TAG, Build.PRODUCT);
+        Log.d(TAG, Build.TAGS);
+        Log.d(TAG, Build.TYPE);
+        Log.d(TAG, Build.USER);
+
+
     }
 }

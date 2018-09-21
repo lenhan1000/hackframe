@@ -86,6 +86,7 @@ public class Pet extends Model{
     public JSONObject toJSON(){
         JSONObject j = new JSONObject();
         try{
+            j.put("name", name);
             j.put("type", type);
             j.put("breed", breed);
             j.put("age", age);
@@ -93,7 +94,7 @@ public class Pet extends Model{
             j.put("personality", personality);
             j.put("gender", gender);
             j.put("spayed", spayed);
-            j.put("birth", birth);
+            j.put("birth", birth.getTime());
         }catch(JSONException e){
             Log.e(TAG, e.getMessage());
         }
@@ -113,6 +114,16 @@ public class Pet extends Model{
             infoUrl = context.getResources().getString(R.string.api_pet_dog_breed);
         }
         req.get(req.baseUrl, infoUrl,
+                token);
+    }
+
+    public static void getMyPets(Context context){
+        String token = getToken(context);
+        if(token.isEmpty()) return ;
+        Http2Request req = new Http2Request(context);
+        String route = context.getResources().getString(R.string.api_user_pets);
+        req.get(req.baseUrl,
+                route,
                 token);
     }
 }

@@ -12,12 +12,14 @@ import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -26,8 +28,12 @@ import android.widget.TextView;
 
 import com.example.silc.hackathonframework.R;
 import com.example.silc.hackathonframework.helpers.Http2Request;
+import com.example.silc.hackathonframework.helpers.Utils;
+import com.example.silc.hackathonframework.models.Pet;
 import com.example.silc.hackathonframework.models.User;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -35,6 +41,7 @@ import java.util.ArrayList;
 public class PetProfiles extends AppCompatActivity implements Http2Request.Http2RequestListener{
     private static final String TAG = "activities.PetProfiles";
     private static final boolean DEBUG = true;
+    private String petsRoute;
     private Context context = this;
     private BottomNavigationView navigation;
     private FloatingActionButton fab;
@@ -102,13 +109,41 @@ public class PetProfiles extends AppCompatActivity implements Http2Request.Http2
         fab = findViewById(R.id.FloatingBtn);
         fab.setOnClickListener(mOnClickListener);
         contentView = findViewById(R.id.content);
-        createPetProfileButton("LMAO");
-        createPetProfileButton("4HEAD");
+        petsRoute = getString(R.string.api_user_pets);
+        Pet.getMyPets(context);
     }
 
     @Override
-    public void onRequestFinished(String id, JSONObject body){
+    public void onRequestFinished(String id, JSONObject res){
+        try {
+            boolean success = res.getBoolean("success");
+            if (!success) Log.d(TAG, res.getString("msg"));
+            else {
+                if (id == petsRoute){
+                    ArrayList<JSONObject> pets = Utils.getArrayListFromJSONArray(
+                            res.getJSONArray("msg")
+                    );
+                    for (int i = 0; i < pets.size(); i++){
+                        runOnUiThread(new PetProfileRunnable(
+                                pets.get(i).getJSONObject("info").getString("name")));
+                    }
+                }
+                else {
 
+                }
+            }
+        }catch (JSONException e){
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
+
+    class PetProfileRunnable implements Runnable{
+        String name;
+        PetProfileRunnable(String name) {this.name = name;}
+        public void run(){
+            createPetProfileButton(name);
+        }
     }
 
     private void createPetProfileButton(String name){
@@ -125,7 +160,7 @@ public class PetProfiles extends AppCompatActivity implements Http2Request.Http2
         layout.setOrientation(LinearLayout.HORIZONTAL);
 
         //Set up picture
-        ImageView pic = new ImageView(context);
+        ImageButton pic = new ImageButton(context);
         pic.setId(1);
         pic.setImageResource(R.drawable.ic_dog_pastel_64dp);
         pic.setForegroundGravity(Gravity.CENTER_VERTICAL);
