@@ -27,6 +27,7 @@
     <string name="api_pet_cat_breed">/pets/cats/breed/all</string>
     <string name="api_pet_create">/pets/create</string>
     <string name="api_user_pets">/users/pets</string>
+    <string name="api_user_instance_id">/users/instance-token</string>
 
     //User info
     <string name="user_profile_display_name_hint">Display Name</string>

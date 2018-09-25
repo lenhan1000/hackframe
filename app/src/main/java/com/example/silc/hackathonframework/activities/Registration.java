@@ -23,6 +23,7 @@ import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.helpers.SingleChoiceDialogWrapper;
 import com.example.silc.hackathonframework.helpers.Utils;
 import com.example.silc.hackathonframework.models.*;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.hbb20.CountryCodePicker;
 
 import org.json.JSONException;
@@ -331,6 +332,7 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
                     login(user.getEmail(), mPasswordField.getText().toString());
                 else {
                     User.processLogin(user.getEmail(), res.getString("token"), Registration.this);
+                    App.sendInstanceId(FirebaseInstanceId.getInstance().getId());
                     Intent intent = new Intent(getApplicationContext(), Dashboard.class);
                     startActivity(intent);
                     finish();

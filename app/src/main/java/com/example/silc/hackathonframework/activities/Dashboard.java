@@ -23,7 +23,11 @@ import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.helpers.Utils;
 import android.widget.TextView;
 import com.example.silc.hackathonframework.R;
+import com.example.silc.hackathonframework.models.App;
 import com.example.silc.hackathonframework.models.User;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONObject;
 
@@ -158,7 +162,12 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         Log.d(TAG, Build.TAGS);
         Log.d(TAG, Build.TYPE);
         Log.d(TAG, Build.USER);
-
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                App.sendInstanceId(instanceIdResult.getToken());
+            }
+        });
 
     }
 }

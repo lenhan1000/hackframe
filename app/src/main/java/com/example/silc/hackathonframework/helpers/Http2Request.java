@@ -34,7 +34,7 @@ public class Http2Request {
         public void onFailure(Call call, IOException e) {
             call.cancel();
             res = null;
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, ""+e.getMessage());
         }
 
         @Override
