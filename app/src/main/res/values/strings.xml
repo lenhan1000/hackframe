@@ -20,7 +20,7 @@
     <string name="user_preference_email">email</string>
 
     //API
-    <string name="api_base_url">http://172.19.0.1:3000</string>
+    <string name="api_base_url">https://local-fetch-server.herokuapp.com</string>
     <string name="api_user_info">/users/info</string>
     <string name="api_user_update">/users/update/info</string>
     <string name="api_pet_dog_breed">/pets/dogs/breed/all</string>
@@ -28,6 +28,7 @@
     <string name="api_pet_create">/pets/create</string>
     <string name="api_user_pets">/users/pets</string>
     <string name="api_user_instance_id">/users/instance-token</string>
+    <string name="api_user_location">/users/loc-update</string>
 
     //User info
     <string name="user_profile_display_name_hint">Display Name</string>
@@ -44,7 +45,7 @@
     <string name="title_activity_pet_registration">PetRegistration</string>
 
     //Registration
-    <string name= "profile_text_hint">Type Here</string>
+    <string name="profile_text_hint">Type Here</string>
     <string name="pet_profile_name_hint">Pet Name</string>
     <string name="profile_button_next">CONFIRM</string>
     <string name="pet_profile_breed_hint">Breed</string>
@@ -54,4 +55,7 @@
     <string name="pet_profile_weight_hint">Weight</string>
     <string name="pet_profile_birth_hint">Birthday</string>
     <string name="pet_profile_spayed_hint">Spayed/Neutered</string>
+
+    //Systems alert
+    <string name="ble_not_supported">Bluetooth is not enabled on your device.</string>
 </resources>

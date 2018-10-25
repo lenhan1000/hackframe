@@ -2,6 +2,7 @@ package com.example.silc.hackathonframework.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.silc.hackathonframework.R;
+import com.example.silc.hackathonframework.databinding.ActivityProfileBinding;
 import com.example.silc.hackathonframework.fragments.SingleChoiceDialogFragment;
 import com.example.silc.hackathonframework.helpers.GeographyDialogWrapper;
 import com.example.silc.hackathonframework.helpers.Http2Request;
@@ -35,12 +37,10 @@ import com.example.silc.hackathonframework.models.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Profile extends AppCompatActivity implements View.OnClickListener,
+public class Profile extends AppBarActivity implements View.OnClickListener,
         Http2Request.Http2RequestListener, SingleChoiceDialogFragment.NoticeDialogListener{
     private static final String TAG = "activities.Profile";
     private static final boolean DEBUG = false;
-    private BottomNavigationView navigation;
-    private Toolbar actionBar;
     private FloatingActionButton fab;
     private boolean boolFab;
     private int dialog_id;
@@ -55,69 +55,31 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
     private TextView mCountry;
     private TextInputEditText mZipCode;
     private GeographyDialogWrapper geoDialog;
-
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_profile: {
-                    return true;
-                }
-                case R.id.navigation_dashboard: {
-
-                    Pair<View, String> p1 = Pair.create((View) actionBar, "appbar");
-                    Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
-                    ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(Profile.this, p1, p2);
-                    startActivity(new Intent(context, Dashboard.class), options.toBundle());
-
-                    return true;
-                }
-                case R.id.navigation_pets: {
-                    Pair<View, String> p1 = Pair.create((View) actionBar, "appbar");
-                    Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
-                    ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(Profile.this, p1, p2);
-                    startActivity(new Intent(context, PetProfiles.class), options.toBundle());
-                    return true;
-                }
-                case R.id.navigation_settings: {
-                    return true;
-                }
-                case R.id.navigation_more: {
-                    return true;
-                }
-            }
-            return false;
-        }
-    };
+    private ActivityProfileBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        binding = DataBindingUtil.inflate(getLayoutInflater(),
+                R.layout.activity_profile,
+                mContentFrame,
+                true);
         context = this;
         boolFab = false;
         user = new User();
-        navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigation.setSelectedItemId(R.id.navigation_profile);
-        actionBar = findViewById(R.id.actionBar);
-        setSupportActionBar(actionBar);
-        fab = findViewById(R.id.editFloatingBtn);
+        fab = binding.editFloatingBtn;
         fab.setOnClickListener(this);
+        navigation.getMenu().findItem(R.id.navigation_profile).setChecked(true);
 
         //Info Views
-        mDisplayName = findViewById(R.id.displayName);
-        mEmail = findViewById(R.id.email);
-        mAddress = findViewById(R.id.address);
-        mCity = findViewById(R.id.city);
-        mState = findViewById(R.id.state);
-        mCountry = findViewById(R.id.country);
-        mZipCode = findViewById(R.id.zipCode);
+        mDisplayName = binding.displayName;
+        mEmail = binding.email;
+        mAddress = binding.address;
+        mCity = binding.city;
+        mState = binding.state;
+        mCountry = binding.country;
+        mZipCode = binding.zipCode;
+
 
         //Set onClick
         mCountry.setOnClickListener(this);
@@ -130,8 +92,14 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
         User.getUserInfo(context);
     }
 
+    protected void onResume(){
+        super.onResume();
+        navigation.getMenu().findItem(R.id.navigation_profile).setChecked(true);
+    }
+
     @Override
     public void onClick(View v){
+        super.onClick(v);
         switch(v.getId()){
             case R.id.editFloatingBtn:
                 if (!boolFab) {

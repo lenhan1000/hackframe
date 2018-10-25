@@ -14,6 +14,8 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 @IgnoreExtraProperties
 public class User extends Model implements Parcelable{
     private static final String TAG = "models.Users";
@@ -206,12 +208,33 @@ public class User extends Model implements Parcelable{
 
     }
 
-    public static void getUserInfo(Context context){
+    public static String getUserInfo(Context context){
         String token = getToken(context);
-        if (token.isEmpty()) return;
+        if (token.isEmpty()) return "";
         Http2Request req = new Http2Request(context);
         String infoUrl = context.getResources().getString(R.string.api_user_info);
         req.get(req.baseUrl, infoUrl,
                 token);
+        return infoUrl;
+    }
+
+    public static String updateLocation(double latitude, double longtitude, Context context){
+        //Construct JSON body
+        JSONObject json = new JSONObject();
+        try{
+            Date date = new Date();
+            json.put("date", date.getTime());
+            json.put("lat", latitude);
+            json.put("long", longtitude);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        String token = getToken(context);
+        if(token.isEmpty()) return  "";
+        Http2Request req = new Http2Request(context);
+        String updateUrl = context.getResources().getString(R.string.api_user_location);
+        req.post(req.baseUrl, updateUrl, json.toString(),
+                token);
+        return updateUrl;
     }
 }

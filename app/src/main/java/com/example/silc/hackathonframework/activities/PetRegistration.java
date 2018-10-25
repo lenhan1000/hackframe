@@ -34,10 +34,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class PetRegistration extends AppCompatActivity implements Http2Request.Http2RequestListener{
+public class PetRegistration extends BaseActivityLoggedIn implements Http2Request.Http2RequestListener{
     private static final String TAG = "activities.PetRegistration";
     private static final boolean DEBUG = true;
-    private final Context context = this;
     private static final Integer AGE_LIMIT = 30;
     private Pet pet;
     private String catBreedRoute;

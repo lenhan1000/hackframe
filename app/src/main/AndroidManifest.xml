@@ -4,10 +4,18 @@
     package="com.example.silc.hackathonframework">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
 
     <application
-        android:allowBackup="true"
         android:name=".models.App"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Fetch Coins"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -31,12 +39,16 @@
             android:label="@string/title_activity_profile"
             android:theme="@style/AppTheme" />
         <activity android:name=".activities.PetProfiles" />
-        <activity android:name=".activities.PetRegistration"></activity>
-        <service android:name="com.example.silc.hackathonframework.service.AppFirebaseMessagingService">
+        <activity android:name=".activities.PetRegistration" />
+
+        <service android:name=".service.AppFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <service android:name="com.mbientlab.metawear.android.BtleService" />
+
+        <activity android:name=".activities.DeviceScan"></activity>
     </application>
 
 </manifest>

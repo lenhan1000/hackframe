@@ -26,6 +26,15 @@ allprojects {
         maven {
             url "https://jitpack.io"
         }
+        ivy{
+            url "https://mbientlab.com/releases/ivyrep"
+            layout "gradle"
+        }
+    }
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xmaxerrs" << "1500" // or whatever number you want
+        }
     }
 }
 

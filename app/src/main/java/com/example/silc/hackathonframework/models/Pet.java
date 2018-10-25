@@ -117,13 +117,14 @@ public class Pet extends Model{
                 token);
     }
 
-    public static void getMyPets(Context context){
+    public static String getMyPets(Context context){
         String token = getToken(context);
-        if(token.isEmpty()) return ;
+        if(token.isEmpty()) return "";
         Http2Request req = new Http2Request(context);
         String route = context.getResources().getString(R.string.api_user_pets);
         req.get(req.baseUrl,
                 route,
                 token);
+        return route;
     }
 }

@@ -31,11 +31,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class Registration extends AppCompatActivity implements SingleChoiceDialogFragment.NoticeDialogListener,
+public class Registration extends BaseActivity implements SingleChoiceDialogFragment.NoticeDialogListener,
         View.OnClickListener, Http2Request.Http2RequestListener{
     private static final String TAG = "activities.Registration";
     private static final boolean DEBUG = false;
-    private final Context context = this;
     private int dialog_id;
     private User user;
 

@@ -1,87 +1,36 @@
 package com.example.silc.hackathonframework.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
+import android.databinding.DataBindingUtil;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
-import android.support.v4.widget.ImageViewCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.silc.hackathonframework.R;
+import com.example.silc.hackathonframework.databinding.ActivityPetProfilesBinding;
 import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.helpers.Utils;
 import com.example.silc.hackathonframework.models.Pet;
-import com.example.silc.hackathonframework.models.User;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class PetProfiles extends AppCompatActivity implements Http2Request.Http2RequestListener{
+public class PetProfiles extends AppBarActivity implements Http2Request.Http2RequestListener{
     private static final String TAG = "activities.PetProfiles";
     private static final boolean DEBUG = true;
     private String petsRoute;
-    private Context context = this;
-    private BottomNavigationView navigation;
     private FloatingActionButton fab;
-    private Toolbar actionBar;
     private LinearLayout contentView;
     private ArrayList<LinearLayout> viewArray;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-            switch (item.getItemId()) {
-                case R.id.navigation_dashboard: {
-                    Pair<View, String> p1 = Pair.create((View) actionBar, "appbar");
-                    Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
-                    ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(PetProfiles.this, p1, p2);
-                    startActivity(new Intent(context, Dashboard.class), options.toBundle());
-                    return true;
-                }
-                case R.id.navigation_profile: {
-                    Pair<View, String> p1 = Pair.create((View) actionBar, "appbar");
-                    Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
-                    ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(PetProfiles.this, p1, p2);
-                    startActivity(new Intent(context, Profile.class), options.toBundle());
-                    return true;
-                }
-                case R.id.navigation_pets:
-                    return true;
-                case R.id.navigation_settings:
-                    return true;
-                case R.id.navigation_more:
-                    return true;
-            }
-            return false;
-        }
-    };
-
+    private ActivityPetProfilesBinding binding;
     private View.OnClickListener mOnClickListener
             = new View.OnClickListener() {
         @Override
@@ -98,19 +47,23 @@ public class PetProfiles extends AppCompatActivity implements Http2Request.Http2
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pet_profiles);
+        binding = DataBindingUtil.inflate(getLayoutInflater(),
+                R.layout.activity_pet_profiles,
+                mContentFrame,
+                true);
         viewArray = new ArrayList<LinearLayout>();
         //Set up appbar, bottom nag, etc
-        navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigation.setSelectedItemId(R.id.navigation_pets);
-        actionBar = findViewById(R.id.actionBar);
-        setSupportActionBar(actionBar);
-        fab = findViewById(R.id.FloatingBtn);
+        fab = binding.FloatingBtn;
         fab.setOnClickListener(mOnClickListener);
-        contentView = findViewById(R.id.content);
-        petsRoute = getString(R.string.api_user_pets);
-        Pet.getMyPets(context);
+        contentView = binding.petLayout;
+        navigation.getMenu().findItem(R.id.navigation_pets).setChecked(true);
+        petsRoute = Pet.getMyPets(context);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        navigation.getMenu().findItem(R.id.navigation_pets).setChecked(true);
     }
 
     @Override
@@ -125,7 +78,7 @@ public class PetProfiles extends AppCompatActivity implements Http2Request.Http2
                     );
                     for (int i = 0; i < pets.size(); i++){
                         runOnUiThread(new PetProfileRunnable(
-                                pets.get(i).getJSONObject("info").getString("name")));
+                                pets.get(i).getString("name")));
                     }
                 }
                 else {
