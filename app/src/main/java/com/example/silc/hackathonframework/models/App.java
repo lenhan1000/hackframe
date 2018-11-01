@@ -1,5 +1,6 @@
 package com.example.silc.hackathonframework.models;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.ProcessLifecycleOwner;
@@ -9,9 +10,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.example.silc.hackathonframework.R;
@@ -39,12 +46,15 @@ import com.mbientlab.metawear.builder.RouteBuilder;
 import com.mbientlab.metawear.builder.RouteComponent;
 import com.mbientlab.metawear.data.Acceleration;
 import com.mbientlab.metawear.module.Accelerometer;
+import com.mbientlab.metawear.module.Settings;
 import com.mbientlab.metawear.module.Temperature;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +70,7 @@ public class App extends Application implements
     private static final String TAG = "models.App";
     private static Context context;
     private static String instanceIdRoute;
+    static final int PERMISSION_REQUEST_WRITE = 1;
 
     private AppComponent appComponent;
     private PendantComponent pendantComponent;
@@ -97,6 +108,7 @@ public class App extends Application implements
 
 //        bindPendant();
         ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleListener);
+
 //        final Handler handler = new Handler();
 //        handler.postDelayed(new Runnable() {
 //            @Override
@@ -262,11 +274,54 @@ public class App extends Application implements
         });
     }
 
+    public void getBattery(){
+        Settings settings = pendantComponent.getSettings();
+        settings.battery().addRouteAsync(new RouteBuilder() {
+            @Override
+            public void configure(RouteComponent source) {
+                source.stream(new Subscriber() {
+                    @Override
+                    public void apply(Data data, Object... env) {
+                        Log.e(TAG, data.value(Settings.BatteryState.class).toString());
+                    }
+                });
+            }
+        }).continueWith(new Continuation<Route, Object>() {
+            @Override
+            public Void then(Task<Route> task) throws Exception {
+                settings.battery().read();
+                return null;
+            }
+        });
+    }
+
     public void locationUpdate() throws SecurityException{
         fusedLocationProviderClient.requestLocationUpdates(
                 locationRequest,
                 locationCallback,
                 null
         );
+    }
+
+    public void setUpProfilePicture(){
+        File dir = Environment.getExternalStorageDirectory();
+        File image = new File(dir, "Pictures/profiles.png");
+        if (!image.exists()) {
+            FileOutputStream out;
+            try{
+                out = new FileOutputStream(image);
+                Bitmap img = BitmapFactory.decodeResource(getResources(),
+                        R.drawable.pic_sample_profile);
+                img.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+            }catch (FileNotFoundException e){
+                Log.e(TAG, e.getMessage());
+                e.printStackTrace();
+            }catch (IOException e){
+                Log.e(TAG, e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -55,6 +55,7 @@ public class PendantModule {
                     Log.i(TAG, "Connected");
                     app.getTemp();
                     app.getAccel();
+                    app.getBattery();
                 }
                 return null;
             }
@@ -80,4 +81,9 @@ public class PendantModule {
         return board.getModule(Accelerometer.class);
     }
 
+    @Provides
+    @Singleton
+    public Settings provideSettings(MetaWearBoard board){
+        return board.getModule(Settings.class);
+    }
 }

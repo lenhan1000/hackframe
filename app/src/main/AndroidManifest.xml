@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -38,7 +38,7 @@
             android:name=".activities.Profile"
             android:label="@string/title_activity_profile"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activities.PetProfiles" />
+        <activity android:name=".activities.PetList" />
         <activity android:name=".activities.PetRegistration" />
 
         <service android:name=".service.AppFirebaseMessagingService">
@@ -48,7 +48,8 @@
         </service>
         <service android:name="com.mbientlab.metawear.android.BtleService" />
 
-        <activity android:name=".activities.DeviceScan"></activity>
+        <activity android:name=".activities.DeviceScan" />
+        <activity android:name=".activities.PetProfile"></activity>
     </application>
 
 </manifest>

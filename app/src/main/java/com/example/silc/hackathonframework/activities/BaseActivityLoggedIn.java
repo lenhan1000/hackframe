@@ -27,7 +27,7 @@ import javax.inject.Inject;
 public abstract class BaseActivityLoggedIn extends BaseActivity implements Http2Request.Http2RequestListener{
     private static final String TAG = "activities.LoggedIn";
     private static final int PERMISSION_REQUEST_FINE_LOCATION_CODE = 1;
-    protected FusedLocationProviderClient fusedLocationClient;
+    private static final int PERMISSION_REQUEST_WRITE = 2;
 
     DialogInterface.OnClickListener messageListener = new DialogInterface.OnClickListener() {
         final int BUTTON_NEGATIVE = -2;
@@ -69,7 +69,13 @@ public abstract class BaseActivityLoggedIn extends BaseActivity implements Http2
                     PERMISSION_REQUEST_FINE_LOCATION_CODE);
             return false;
         }
-        return true;
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_WRITE);
+        }        return true;
     }
 
     private void showMessageOKCancel(String message){
@@ -90,6 +96,15 @@ public abstract class BaseActivityLoggedIn extends BaseActivity implements Http2
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     Log.e(TAG, "PERMISSION GRANTED");
                     ((App) getApplicationContext()).locationUpdate();
+                }else{
+                    Log.e(TAG, "PERMISSION DENIED");
+                }
+            }
+            case PERMISSION_REQUEST_WRITE:{
+                if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Log.e(TAG, "PERMISSION GRANTED");
+                    ((App) getApplicationContext()).setUpProfilePicture();
                 }else{
                     Log.e(TAG, "PERMISSION DENIED");
                 }

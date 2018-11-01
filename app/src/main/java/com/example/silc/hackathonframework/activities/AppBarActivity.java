@@ -3,9 +3,7 @@ package com.example.silc.hackathonframework.activities;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
@@ -47,7 +45,7 @@ public abstract class AppBarActivity extends BaseActivityLoggedIn implements Vie
                     Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
                     ActivityOptionsCompat options = ActivityOptionsCompat.
                             makeSceneTransitionAnimation(AppBarActivity.this, p1, p2);
-                    startActivity(new Intent(context, PetProfiles.class), options.toBundle());
+                    startActivity(new Intent(context, PetList.class), options.toBundle());
                     return true;
                 }
                 case R.id.navigation_dashboard:{

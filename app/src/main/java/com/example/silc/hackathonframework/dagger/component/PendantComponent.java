@@ -10,6 +10,7 @@ import com.example.silc.hackathonframework.models.Pendant;
 import com.mbientlab.metawear.MetaWearBoard;
 import com.mbientlab.metawear.android.BtleService;
 import com.mbientlab.metawear.module.Accelerometer;
+import com.mbientlab.metawear.module.Settings;
 import com.mbientlab.metawear.module.Temperature;
 
 import javax.inject.Singleton;
@@ -25,6 +26,7 @@ public interface PendantComponent {
     Temperature.Sensor getTemperatureSensor();
     Accelerometer getAccelerometer();
     MetaWearBoard getMetaWearBoard();
+    Settings getSettings();
 
     @Component.Builder
     interface Builder {

@@ -1,10 +1,18 @@
 package com.example.silc.hackathonframework.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.hardware.camera2.*;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -37,10 +45,17 @@ import com.example.silc.hackathonframework.models.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class Profile extends AppBarActivity implements View.OnClickListener,
-        Http2Request.Http2RequestListener, SingleChoiceDialogFragment.NoticeDialogListener{
+        Http2Request.Http2RequestListener, SingleChoiceDialogFragment.NoticeDialogListener {
     private static final String TAG = "activities.Profile";
     private static final boolean DEBUG = false;
+    private static final int SELECT_IMAGE = 1;
     private FloatingActionButton fab;
     private boolean boolFab;
     private int dialog_id;
@@ -56,6 +71,9 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
     private TextInputEditText mZipCode;
     private GeographyDialogWrapper geoDialog;
     private ActivityProfileBinding binding;
+
+    //Camera
+    static final int REQUEST_IMAGE_CAPTURE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,17 +108,26 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
         geoDialog = new GeographyDialogWrapper(context);
 
         User.getUserInfo(context);
+
+        binding.profileImage.setOnClickListener(this);
+
+        File dir = Environment.getExternalStorageDirectory();
+        File img = new File(dir, "Pictures/profiles.png");
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        Bitmap bitmap = BitmapFactory.decodeFile(img.getAbsolutePath(), options);
+        binding.profileImage.setImageBitmap(bitmap);
     }
 
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         navigation.getMenu().findItem(R.id.navigation_profile).setChecked(true);
     }
 
     @Override
-    public void onClick(View v){
+    public void onClick(View v) {
         super.onClick(v);
-        switch(v.getId()){
+        switch (v.getId()) {
             case R.id.editFloatingBtn:
                 if (!boolFab) {
                     v.clearAnimation();
@@ -115,42 +142,78 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
                 } else {
                     try {
                         saveUser();
-                    }catch(JSONException e){
+                    } catch (JSONException e) {
                         Log.e(TAG, "Json parsing error: " + e.getMessage());
                         Toast.makeText(context, "An error occured",
                                 Toast.LENGTH_SHORT).show();
                     }
-                 }
+                }
                 break;
             case R.id.country:
-                if(boolFab) {
+                if (boolFab) {
                     dialog_id = R.id.country;
                     geoDialog.popCountryDialog();
                 }
                 break;
             case R.id.state:
-                if(boolFab) {
+                if (boolFab) {
                     dialog_id = R.id.state;
                     geoDialog.popStateDialog();
                 }
                 break;
             case R.id.city:
-                if(boolFab) {
+                if (boolFab) {
                     dialog_id = R.id.city;
                     geoDialog.popCityDialog();
                 }
+                break;
+            case R.id.profile_image:
+                if (boolFab) {
+//                    Log.e(TAG, "ACCESSING GALLERY...");
+//                    Intent intent = new Intent();
+//                    intent.setType("image/*");
+//                    intent.setAction(Intent.ACTION_GET_CONTENT);
+//                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE);
+                    takePhoto();
+                }
+                break;
         }
     }
 
     @Override
-    public void onRequestFinished(String id, JSONObject body){
-        if (id.equals(getString(R.string.api_user_info))){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_IMAGE && data != null) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                        binding.profileImage.setImageBitmap(bitmap);
+                        Log.e(TAG, "ACCESSED GALLERY");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
+            }
+        }else if (requestCode == REQUEST_IMAGE_CAPTURE && data != null){
+            Bundle extras = data.getExtras();
+            Bitmap bm = (Bitmap) extras.get("data");
+            binding.profileImage.setImageBitmap(bm);
+            File dir = Environment.getExternalStorageDirectory();
+        }
+    }
+
+    @Override
+    public void onRequestFinished(String id, JSONObject body) {
+        if (id.equals(getString(R.string.api_user_info))) {
             try {
                 final String msg = body.getString("msg");
                 if (body.getBoolean("success")) {
                     JSONObject info = body.getJSONObject("msg");
                     loadInfo(info);
-                }else{
+                } else {
                     Log.e(TAG, body.getString("msg"));
                     runOnUiThread(new Runnable() {
                         @Override
@@ -161,7 +224,7 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
                     });
 
                 }
-            }catch (JSONException e){
+            } catch (JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
                 runOnUiThread(new Runnable() {
                     @Override
@@ -171,8 +234,7 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
                     }
                 });
             }
-        }
-        else if(id.equals(getString(R.string.api_user_update))) {
+        } else if (id.equals(getString(R.string.api_user_update))) {
             try {
                 final String msg = body.getString("msg");
                 if (body.getBoolean("success")) {
@@ -183,33 +245,35 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
                         @Override
                         public void run() {
                             Toast.makeText(context, msg,
-                                    Toast.LENGTH_SHORT).show();                        }
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     });
                 }
-            }catch (JSONException e){
+            } catch (JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(context, "An error occurred",
-                                Toast.LENGTH_SHORT).show();                    }
+                                Toast.LENGTH_SHORT).show();
+                    }
                 });
             }
         }
     }
 
     @Override
-    public void onDialogTextSelect(int id, String dialog){
+    public void onDialogTextSelect(int id, String dialog) {
         try {
             if (dialog_id == R.id.country) {
-                if(!user.getCountry().getString("name").equals(dialog)){
+                if (!user.getCountry().getString("name").equals(dialog)) {
                     mCountry.setText(dialog);
                     geoDialog.country_id = id + 1;
                     mState.setText("Select");
                     mCity.setText("Select");
                 }
             } else if (dialog_id == R.id.state) {
-                if(!user.getCountry().getString("name").equals(dialog)) {
+                if (!user.getCountry().getString("name").equals(dialog)) {
                     mState.setText(dialog);
                     geoDialog.state_id = State.stateId(geoDialog.states, dialog);
                     mCity.setText("Select");
@@ -217,12 +281,12 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
             } else if (dialog_id == R.id.city) {
                 mCity.setText(dialog);
             }
-        }catch(JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void loadInfo(JSONObject u) throws JSONException{
+    public void loadInfo(JSONObject u) throws JSONException {
         final JSONObject info = u;
         final String email = Utils.getStringSharedPreferences(context,
                 context.getString(R.string.user_preference_email),
@@ -250,15 +314,27 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
                     mState.setText(user.getState().getString("name"));
                     mCountry.setText(user.getCountry().getString("name"));
                     mZipCode.setText(user.getZipCode());
-                }catch(JSONException e) {
+                } catch (JSONException e) {
                     Log.e(TAG, "Json parsing err: " + e.getMessage());
                 }
             }
         });
     }
 
-    private void saveUser() throws JSONException{
-        if (!validate()){ return; }
+    private void saveUser() throws JSONException {
+        if (!validate()) {
+            return;
+        }
+        File img = new File(
+                Environment.getExternalStorageDirectory(),
+                "Pictures/profiles.png");
+        try (FileOutputStream out = new FileOutputStream(img)){
+            Bitmap bm = ((BitmapDrawable)binding.profileImage.getDrawable()).getBitmap();
+            bm.compress(Bitmap.CompressFormat.PNG, 100, out);
+        } catch (IOException e){
+            e.printStackTrace();
+            Log.e(TAG,"IO ERROR");
+        }
         user.setDisplayName(mDisplayName.getText().toString());
         user.setAddress(mAddress.getText().toString());
         user.setCity(mCity.getText().toString());
@@ -278,7 +354,7 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
                 User.getToken(context), body.toString());
     }
 
-    private void saveUserUiUpdate(){
+    private void saveUserUiUpdate() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -295,13 +371,13 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
         });
     }
 
-    private boolean validate(){
+    private boolean validate() {
         boolean valid = true;
 
         String displayName = mDisplayName.getText().toString();
         if (TextUtils.isEmpty(displayName)) {
             mDisplayName.setError("Required.");
-            valid=false;
+            valid = false;
         }
 
 //        String mobile = mMobile.getText().toString();
@@ -318,37 +394,43 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
         String address = mAddress.getText().toString();
         if (TextUtils.isEmpty(address)) {
             mAddress.setError("Required.");
-            valid=false;
+            valid = false;
         }
 
         String country = mCountry.getText().toString();
         if (TextUtils.isEmpty(country)) {
             mCountry.setError("Required.");
-            valid=false;
+            valid = false;
         }
 
         String city = mCity.getText().toString();
         if (city.equals("Select")) {
             mCity.setError("Required.");
-            valid=false;
+            valid = false;
         }
 
         String state = mState.getText().toString();
         if (state.equals("Select")) {
             mState.setError("Required.");
-            valid=false;
+            valid = false;
         }
 
         String zipCode = mZipCode.getText().toString();
         if (TextUtils.isEmpty(zipCode)) {
             mZipCode.setError("Required.");
-            valid=false;
-        }else if(!Utils.isValidZipCode(zipCode)){
+            valid = false;
+        } else if (!Utils.isValidZipCode(zipCode)) {
             mZipCode.setError("Invalid Zip.");
             valid = false;
         }
 
-        return DEBUG||valid;
+        return DEBUG || valid;
     }
 
+    private void takePhoto() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
 }

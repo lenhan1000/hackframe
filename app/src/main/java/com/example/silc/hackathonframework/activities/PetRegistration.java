@@ -1,8 +1,6 @@
 package com.example.silc.hackathonframework.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,16 +21,12 @@ import com.example.silc.hackathonframework.models.Pet;
 import com.example.silc.hackathonframework.models.User;
 import com.github.shchurov.horizontalwheelview.HorizontalWheelView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 public class PetRegistration extends BaseActivityLoggedIn implements Http2Request.Http2RequestListener{
     private static final String TAG = "activities.PetRegistration";
@@ -76,7 +70,7 @@ public class PetRegistration extends BaseActivityLoggedIn implements Http2Reques
                     });
                 }
                 if(id == createRoute){
-                    startActivity(new Intent(getApplicationContext(), PetProfiles.class));
+                    startActivity(new Intent(getApplicationContext(), PetList.class));
                     finish();
                 }
             }
