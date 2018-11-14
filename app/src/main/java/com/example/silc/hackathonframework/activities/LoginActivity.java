@@ -27,13 +27,12 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, Http2Request.Http2RequestListener{
+public class LoginActivity extends BaseActivity implements View.OnClickListener, Http2Request.Http2RequestListener{
     private static final String TAG = "Login";
     private static final String loginUrl = "/users/login";
     private EditText mEmailField;
     private EditText mPasswordField;
     private String email;
-    private Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +74,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onDestroy(){
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     private void signIn(final String email, String password) {
@@ -124,9 +132,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try {
             boolean success = res.getBoolean("success");
             if (!success) {
-                Toast.makeText(this, "Unsucessful Login",
-                        Toast.LENGTH_SHORT).show();
-                Log.d(TAG, res.getString("message"));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Unsuccessful Login",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                Log.d(TAG, res.getString("msg"));
             } else {
                 User.processLogin(email, res.getString("token"), this);
 

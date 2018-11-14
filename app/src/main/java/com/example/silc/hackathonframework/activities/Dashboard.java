@@ -1,77 +1,33 @@
 package com.example.silc.hackathonframework.activities;
 
-import android.app.ActivityOptions;
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.FrameLayout;
+import android.widget.Toast;
 
+import com.example.silc.hackathonframework.databinding.ActivityDashboardBinding;
 import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.helpers.Utils;
-import android.widget.TextView;
 import com.example.silc.hackathonframework.R;
-import com.example.silc.hackathonframework.models.User;
+import com.example.silc.hackathonframework.models.App;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
-public class Dashboard extends AppCompatActivity implements View.OnClickListener, Http2Request.Http2RequestListener{
+public class Dashboard extends AppBarActivity implements View.OnClickListener,
+        Http2Request.Http2RequestListener{
     private static final String TAG = "activities.Dashboard";
-    private ConstraintLayout mContentFrame;
-    private Context context = this;
-    private BottomNavigationView navigation;
-    private Toolbar myToolbar;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_profile:
-                    Pair<View, String> p1 = Pair.create((View) myToolbar, "appbar");
-                    Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
-                    ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(Dashboard.this, p1, p2);
-                    startActivity(new Intent(context, Profile.class), options.toBundle());
-
-                    User.getUserInfo(context);
-                    return true;
-                case R.id.navigation_pets:
-                    return true;
-                case R.id.navigation_settings:
-                    mContentFrame.removeAllViews();
-                    LayoutInflater.from(Dashboard.this).inflate(R.layout.activity_settings, mContentFrame);
-
-                    Dashboard.this.findViewById(R.id.button2).setOnClickListener(Dashboard.this);
-                    return true;
-                case R.id.navigation_more:
-                    return true;
-            }
-            return false;
-        }
-    };
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.menu_dashboard_appbar, menu);
-        return true;
-    }
+    private ActivityDashboardBinding binding;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
@@ -86,20 +42,30 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
-
-        navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        myToolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
+        binding = DataBindingUtil.inflate(getLayoutInflater(),
+                R.layout.activity_dashboard,
+                mContentFrame,
+                true);
+        ((App) getApplication()).getComponent().inject(this);
         getSupportActionBar().setTitle("Champ");
         getSupportActionBar().setSubtitle("Last Synced " + Utils.getCurrentTime());
-        mContentFrame = findViewById(R.id.content);
+        binding.buttonActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, PetActivities.class));
+            }
+        });
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        navigation.getMenu().findItem(R.id.navigation_dashboard).setChecked(true);
     }
 
     @Override
@@ -113,19 +79,22 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v){
-        switch(v.getId()){
-            case R.id.button2:
-                Utils.clearSharedPreferences(this, getString(R.string.user_preference));
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-                finish();
-            default:
-                return;
-        }
+        super.onClick(v);
     }
 
     @Override
     public void onRequestFinished(String id, JSONObject user){
         if (user != null) Log.d(TAG, user.toString());
     }
+
+    private void forceInstanceIdUpdate(){
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                Log.i(TAG, "UPDATING IID");
+                App.sendInstanceId(instanceIdResult.getToken());
+            }
+        });
+    }
+
 }

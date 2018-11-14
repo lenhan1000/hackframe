@@ -23,6 +23,7 @@ import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.helpers.SingleChoiceDialogWrapper;
 import com.example.silc.hackathonframework.helpers.Utils;
 import com.example.silc.hackathonframework.models.*;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.hbb20.CountryCodePicker;
 
 import org.json.JSONException;
@@ -30,11 +31,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class Registration extends AppCompatActivity implements SingleChoiceDialogFragment.NoticeDialogListener,
+public class Registration extends BaseActivity implements SingleChoiceDialogFragment.NoticeDialogListener,
         View.OnClickListener, Http2Request.Http2RequestListener{
     private static final String TAG = "activities.Registration";
     private static final boolean DEBUG = false;
-    private final Context context = this;
     private int dialog_id;
     private User user;
 
@@ -185,12 +185,18 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
                 }
                 Log.d(TAG, "nextViewInit");
                 //Construct a User object
-                user.setAddress(mAddressField.getText().toString());
-                user.setCountry(mCountryList.getText().toString());
-                user.setState(mStateList.getText().toString());
-                user.setCity(mCityList.getText().toString());
-                user.setZipCode(mZipCodeField.getText().toString());
-                inflate_cred();
+                try {
+                    user.setAddress(mAddressField.getText().toString());
+                    user.setCountry(geoWrapper.country_id,
+                            mCountryList.getText().toString());
+                    user.setState(geoWrapper.state_id,
+                            mStateList.getText().toString());
+                    user.setCity(mCityList.getText().toString());
+                    user.setZipCode(mZipCodeField.getText().toString());
+                    inflate_cred();
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -319,18 +325,18 @@ public class Registration extends AppCompatActivity implements SingleChoiceDialo
     public void onRequestFinished(String id, JSONObject res){
         try {
             boolean success = res.getBoolean("success");
-            if (!success) Log.d(TAG, res.getString("message"));
+            if (!success) Log.d(TAG, res.getString("msg"));
             else {
                 if (id == registerUrl)
                     login(user.getEmail(), mPasswordField.getText().toString());
                 else {
                     User.processLogin(user.getEmail(), res.getString("token"), Registration.this);
+                    App.sendInstanceId(FirebaseInstanceId.getInstance().getId());
                     Intent intent = new Intent(getApplicationContext(), Dashboard.class);
                     startActivity(intent);
                     finish();
                 }
             }
-
         }catch (JSONException e){
             Log.e(TAG, e.getMessage());
         }

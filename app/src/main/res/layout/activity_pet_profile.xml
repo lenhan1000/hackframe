@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="pet"
+            type="com.example.silc.hackathonframework.models.Pet"/>
+    </data>
     <android.support.constraint.ConstraintLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activities.Profile">
-
-
+        tools:context=".activities.PetProfile">
         <FrameLayout
             android:id="@+id/contentLayout"
             android:layout_width="0dp"
@@ -72,8 +73,8 @@
                                 android:id="@+id/displayName"
                                 style="@style/editTextProfile"
                                 android:layout_width="wrap_content"
+                                android:text="@{pet.getName()}"
                                 android:gravity="center"
-                                android:text="Nhan Phan"
                                 android:textSize="30sp"
                                 android:textStyle="bold"
                                 tools:layout_editor_absoluteX="16dp"
@@ -84,13 +85,14 @@
                     </LinearLayout>
 
                     <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input_layout_email"
+                        android:id="@+id/input_layout_breed"
                         style="@style/textInputLayoutProfile">
 
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/email"
+                            android:id="@+id/breed"
                             style="@style/editTextProfile"
-                            android:hint="@string/user_profile_email_hint"
+                            android:hint="Breed"
+                            android:text="@{pet.getBreed()}"
                             tools:layout_editor_absoluteX="16dp"
                             tools:layout_editor_absoluteY="16dp" />
 
@@ -98,13 +100,14 @@
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input_layout_address"
+                        android:id="@+id/input_layout_age"
                         style="@style/textInputLayoutProfile">
 
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/address"
+                            android:id="@+id/age"
                             style="@style/editTextProfile"
-                            android:hint="@string/user_profile_address_hint"
+                            android:hint="Age"
+                            android:text="@{Double.toString(pet.age)}"
                             tools:layout_editor_absoluteX="16dp"
                             tools:layout_editor_absoluteY="16dp" />
 
@@ -112,13 +115,14 @@
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input_layout_city"
+                        android:id="@+id/input_layout_weight"
                         style="@style/textInputLayoutProfile">
 
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/city"
+                            android:id="@+id/weight"
                             style="@style/editTextProfile"
-                            android:hint="@string/user_profile_city_hint"
+                            android:hint="Weight"
+                            android:text="@{Double.toString(pet.weight)}"
                             tools:layout_editor_absoluteX="16dp"
                             tools:layout_editor_absoluteY="16dp" />
 
@@ -126,13 +130,14 @@
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input_layout_state"
+                        android:id="@+id/input_layout_gender"
                         style="@style/textInputLayoutProfile">
 
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/state"
+                            android:id="@+id/gender"
                             style="@style/editTextProfile"
-                            android:hint="@string/user_profile_state_hint"
+                            android:hint="Gender"
+                            android:text="@{pet.getGenderString()}"
                             tools:layout_editor_absoluteX="16dp"
                             tools:layout_editor_absoluteY="16dp" />
 
@@ -140,13 +145,14 @@
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input_layout_country"
+                        android:id="@+id/input_layout_spayed"
                         style="@style/textInputLayoutProfile">
 
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/country"
+                            android:id="@+id/spayed"
                             style="@style/editTextProfile"
-                            android:hint="@string/user_profile_country_hint"
+                            android:hint="Spayed"
+                            android:text="@{pet.getSpayedString() }"
                             tools:layout_editor_absoluteX="16dp"
                             tools:layout_editor_absoluteY="16dp" />
 
@@ -154,13 +160,14 @@
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input_layout_zipCode"
+                        android:id="@+id/input_layout_birth"
                         style="@style/textInputLayoutProfile">
 
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/zipCode"
+                            android:id="@+id/birth"
                             style="@style/editTextProfile"
-                            android:hint="@string/user_profile_zip_code_hint"
+                            android:hint="Birth"
+                            android:text="@{pet.getBirth().toString()}"
                             tools:layout_editor_absoluteX="16dp"
                             tools:layout_editor_absoluteY="16dp" />
 
@@ -170,5 +177,6 @@
                 </LinearLayout>
             </ScrollView>
         </FrameLayout>
+
     </android.support.constraint.ConstraintLayout>
 </layout>

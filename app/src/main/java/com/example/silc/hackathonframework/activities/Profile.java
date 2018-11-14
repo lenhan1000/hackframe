@@ -1,16 +1,28 @@
 package com.example.silc.hackathonframework.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.hardware.camera2.*;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -22,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.silc.hackathonframework.R;
+import com.example.silc.hackathonframework.databinding.ActivityProfileBinding;
 import com.example.silc.hackathonframework.fragments.SingleChoiceDialogFragment;
 import com.example.silc.hackathonframework.helpers.GeographyDialogWrapper;
 import com.example.silc.hackathonframework.helpers.Http2Request;
@@ -32,78 +45,59 @@ import com.example.silc.hackathonframework.models.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Profile extends AppCompatActivity implements View.OnClickListener,
-        Http2Request.Http2RequestListener, SingleChoiceDialogFragment.NoticeDialogListener{
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class Profile extends AppBarActivity implements View.OnClickListener,
+        Http2Request.Http2RequestListener, SingleChoiceDialogFragment.NoticeDialogListener {
     private static final String TAG = "activities.Profile";
-    private BottomNavigationView navigation;
+    private static final boolean DEBUG = false;
+    private static final int SELECT_IMAGE = 1;
     private FloatingActionButton fab;
     private boolean boolFab;
     private int dialog_id;
     private User user;
     private Context context;
 
-    private Toolbar myToolbar;
-    private EditText mEmail;
-    private EditText mDisplayName;
-    private EditText mAddress;
+    private TextInputEditText mEmail;
+    private TextInputEditText mDisplayName;
+    private TextInputEditText mAddress;
     private TextView mCity;
     private TextView mState;
     private TextView mCountry;
-    private EditText mZipCode;
+    private TextInputEditText mZipCode;
     private GeographyDialogWrapper geoDialog;
+    private ActivityProfileBinding binding;
 
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_profile:
-                    return true;
-                case R.id.navigation_dashboard:
-
-                    Pair<View, String> p1 = Pair.create((View) myToolbar, "appbar");
-                    Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
-                    ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(Profile.this, p1, p2);
-                    startActivity(new Intent(context, Dashboard.class), options.toBundle());
-
-                    return true;
-                case R.id.navigation_pets:
-                    return true;
-                case R.id.navigation_settings:
-                    return true;
-                case R.id.navigation_more:
-                    return true;
-            }
-            return false;
-        }
-    };
+    //Camera
+    static final int REQUEST_IMAGE_CAPTURE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        binding = DataBindingUtil.inflate(getLayoutInflater(),
+                R.layout.activity_profile,
+                mContentFrame,
+                true);
         context = this;
         boolFab = false;
         user = new User();
-        navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigation.setSelectedItemId(R.id.navigation_profile);
-        myToolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-        fab = findViewById(R.id.editFloatingBtn);
+        fab = binding.editFloatingBtn;
         fab.setOnClickListener(this);
+        navigation.getMenu().findItem(R.id.navigation_profile).setChecked(true);
 
         //Info Views
-        mDisplayName = findViewById(R.id.displayName);
-        mEmail = findViewById(R.id.email);
-        mAddress = findViewById(R.id.address);
-        mCity = findViewById(R.id.city);
-        mState = findViewById(R.id.state);
-        mCountry = findViewById(R.id.country);
-        mZipCode = findViewById(R.id.zipCode);
+        mDisplayName = binding.displayName;
+        mEmail = binding.email;
+        mAddress = binding.address;
+        mCity = binding.city;
+        mState = binding.state;
+        mCountry = binding.country;
+        mZipCode = binding.zipCode;
+
 
         //Set onClick
         mCountry.setOnClickListener(this);
@@ -114,11 +108,26 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
         geoDialog = new GeographyDialogWrapper(context);
 
         User.getUserInfo(context);
+
+        binding.profileImage.setOnClickListener(this);
+
+        File dir = Environment.getExternalStorageDirectory();
+        File img = new File(dir, "Pictures/profiles.png");
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        Bitmap bitmap = BitmapFactory.decodeFile(img.getAbsolutePath(), options);
+        binding.profileImage.setImageBitmap(bitmap);
+    }
+
+    protected void onResume() {
+        super.onResume();
+        navigation.getMenu().findItem(R.id.navigation_profile).setChecked(true);
     }
 
     @Override
-    public void onClick(View v){
-        switch(v.getId()){
+    public void onClick(View v) {
+        super.onClick(v);
+        switch (v.getId()) {
             case R.id.editFloatingBtn:
                 if (!boolFab) {
                     v.clearAnimation();
@@ -131,127 +140,297 @@ public class Profile extends AppCompatActivity implements View.OnClickListener,
                     Toast.makeText(context, "Select to Edit",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    v.clearAnimation();
-                    fab.setImageResource(R.drawable.ic_edit_pastel_64dp);
-                    mDisplayName.setFocusable(false);
-                    mEmail.setFocusable(false);
-                    mAddress.setFocusable(false);
-                    mZipCode.setFocusable(false);
-                    boolFab = false;
-                    saveUser();
-                 }
+                    try {
+                        saveUser();
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Json parsing error: " + e.getMessage());
+                        Toast.makeText(context, "An error occured",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
                 break;
             case R.id.country:
-                if(boolFab) {
+                if (boolFab) {
                     dialog_id = R.id.country;
                     geoDialog.popCountryDialog();
                 }
                 break;
             case R.id.state:
-                if(boolFab) {
+                if (boolFab) {
                     dialog_id = R.id.state;
                     geoDialog.popStateDialog();
                 }
                 break;
             case R.id.city:
-                if(boolFab) {
+                if (boolFab) {
+                    dialog_id = R.id.city;
                     geoDialog.popCityDialog();
                 }
+                break;
+            case R.id.profile_image:
+                if (boolFab) {
+//                    Log.e(TAG, "ACCESSING GALLERY...");
+//                    Intent intent = new Intent();
+//                    intent.setType("image/*");
+//                    intent.setAction(Intent.ACTION_GET_CONTENT);
+//                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE);
+                    takePhoto();
+                }
+                break;
         }
     }
 
     @Override
-    public void onRequestFinished(String id, JSONObject body){
-        if (id.equals(getString(R.string.api_user_info))){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_IMAGE && data != null) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                        binding.profileImage.setImageBitmap(bitmap);
+                        Log.e(TAG, "ACCESSED GALLERY");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
+            }
+        }else if (requestCode == REQUEST_IMAGE_CAPTURE && data != null){
+            Bundle extras = data.getExtras();
+            Bitmap bm = (Bitmap) extras.get("data");
+            binding.profileImage.setImageBitmap(bm);
+            File dir = Environment.getExternalStorageDirectory();
+        }
+    }
+
+    @Override
+    public void onRequestFinished(String id, JSONObject body) {
+        if (id.equals(getString(R.string.api_user_info))) {
             try {
+                final String msg = body.getString("msg");
                 if (body.getBoolean("success")) {
-                    JSONObject info = body.getJSONObject("message");
+                    JSONObject info = body.getJSONObject("msg");
                     loadInfo(info);
-                }else{
-                    Log.e(TAG, body.getString("message"));
-                    Toast.makeText(context, body.getString("message"),
-                            Toast.LENGTH_SHORT).show();
-                }
-            }catch (JSONException e){
-                Log.e(TAG, "Json parsing error: " + e.getMessage());
-                Toast.makeText(context, "An error occurred",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-        else if(id.equals(getString(R.string.api_user_update))) {
-            try {
-                if (body.getBoolean("success")) {
-                    Toast.makeText(context, "Saved Successful",
-                            Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.e(TAG, body.getString("message"));
-                    Toast.makeText(context, body.getString("message"),
-                            Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, body.getString("msg"));
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, msg,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                 }
-            }catch (JSONException e){
+            } catch (JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
-                Toast.makeText(context, "An error occurred",
-                        Toast.LENGTH_SHORT).show();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "An error occured",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        } else if (id.equals(getString(R.string.api_user_update))) {
+            try {
+                final String msg = body.getString("msg");
+                if (body.getBoolean("success")) {
+                    saveUserUiUpdate();
+                } else {
+                    Log.e(TAG, body.getString("msg"));
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, msg,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "Json parsing error: " + e.getMessage());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "An error occurred",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
     }
 
     @Override
-    public void onDialogTextSelect(int id, String dialog){
-        if (dialog_id == R.id.country){
-            mCountry.setText(dialog);
-            geoDialog.country_id = id + 1;
-        }else if (dialog_id == R.id.state){
-            mState.setText(dialog);
-            geoDialog.state_id = State.stateId(geoDialog.states, dialog);
-        }else if (dialog_id == R.id.city){
-            mCity.setText(dialog);
+    public void onDialogTextSelect(int id, String dialog) {
+        try {
+            if (dialog_id == R.id.country) {
+                if (!user.getCountry().getString("name").equals(dialog)) {
+                    mCountry.setText(dialog);
+                    geoDialog.country_id = id + 1;
+                    mState.setText("Select");
+                    mCity.setText("Select");
+                }
+            } else if (dialog_id == R.id.state) {
+                if (!user.getCountry().getString("name").equals(dialog)) {
+                    mState.setText(dialog);
+                    geoDialog.state_id = State.stateId(geoDialog.states, dialog);
+                    mCity.setText("Select");
+                }
+            } else if (dialog_id == R.id.city) {
+                mCity.setText(dialog);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
-    public void loadInfo(JSONObject u){
+    public void loadInfo(JSONObject u) throws JSONException {
         final JSONObject info = u;
         final String email = Utils.getStringSharedPreferences(context,
                 context.getString(R.string.user_preference_email),
                 "",
                 context.getString(R.string.user_preference));
+        user.setEmail(email);
+        //Set up user object with info
+        user.setDisplayName(info.getString("displayName"));
+        user.setAddress(info.getString("address"));
+        user.setCity(info.getString("city"));
+        user.setZipCode(info.getString("zipCode"));
+        user.setCountry(info.getString("country"));
+        user.setState(info.getString("state"));
+        geoDialog.state_id = user.getState().getInt("id");
+        geoDialog.country_id = user.getCountry().getInt("id");
+        //Run thread to change info on UI
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mEmail.setText(email);
                 try {
-                    mDisplayName.setText(info.getString("displayName"));
-                    mAddress.setText(info.getString("address"));
-                    mCity.setText(info.getString("city"));
-                    mState.setText(info.getString("state"));
-                    mCountry.setText(info.getString("country"));
-                    mZipCode.setText(info.getString("zipCode"));
-                }catch(JSONException e) {
+                    mDisplayName.setText(user.getDisplayName());
+                    mAddress.setText(user.getAddress());
+                    mCity.setText(user.getCity());
+                    mState.setText(user.getState().getString("name"));
+                    mCountry.setText(user.getCountry().getString("name"));
+                    mZipCode.setText(user.getZipCode());
+                } catch (JSONException e) {
                     Log.e(TAG, "Json parsing err: " + e.getMessage());
                 }
             }
         });
     }
 
-    private void saveUser(){
-        validate();
+    private void saveUser() throws JSONException {
+        if (!validate()) {
+            return;
+        }
+        File img = new File(
+                Environment.getExternalStorageDirectory(),
+                "Pictures/profiles.png");
+        try (FileOutputStream out = new FileOutputStream(img)){
+            Bitmap bm = ((BitmapDrawable)binding.profileImage.getDrawable()).getBitmap();
+            bm.compress(Bitmap.CompressFormat.PNG, 100, out);
+        } catch (IOException e){
+            e.printStackTrace();
+            Log.e(TAG,"IO ERROR");
+        }
         user.setDisplayName(mDisplayName.getText().toString());
         user.setAddress(mAddress.getText().toString());
         user.setCity(mCity.getText().toString());
-        user.setState(mState.getText().toString());
-        user.setCountry(mCountry.getText().toString());
+        user.setState(geoDialog.state_id,
+                mState.getText().toString());
+        user.setCountry(geoDialog.country_id,
+                mCountry.getText().toString());
         user.setZipCode(mZipCode.getText().toString());
         user.setEmail(Utils.getStringSharedPreferences(context,
                 context.getString(R.string.user_preference_email),
                 "",
                 context.getString(R.string.user_preference)));
+        JSONObject body = new JSONObject();
+        body.put("info", user.toJSON());
         Http2Request req = new Http2Request(context);
         req.put(getString(R.string.api_base_url), getString(R.string.api_user_update),
-                User.getToken(context),user.toJSON().toString());
+                User.getToken(context), body.toString());
     }
 
-    private void validate(){
-        //TODO
+    private void saveUserUiUpdate() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.editFloatingBtn).clearAnimation();
+                fab.setImageResource(R.drawable.ic_edit_pastel_64dp);
+                mDisplayName.setFocusable(false);
+                mEmail.setFocusable(false);
+                mAddress.setFocusable(false);
+                mZipCode.setFocusable(false);
+                boolFab = false;
+                Toast.makeText(context, "Saved Successful",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+    private boolean validate() {
+        boolean valid = true;
+
+        String displayName = mDisplayName.getText().toString();
+        if (TextUtils.isEmpty(displayName)) {
+            mDisplayName.setError("Required.");
+            valid = false;
+        }
+
+//        String mobile = mMobile.getText().toString();
+//        if (TextUtils.isEmpty(mobile)) {
+//            mMobile.setError("Required.");
+//            valid=false;
+//        }
+//
+//        String carrier = mCarrier.getText().toString();
+//        if (TextUtils.isEmpty(carrier)) {
+//            mCarrier.setError("Required.");
+//            valid=false;
+//        }
+        String address = mAddress.getText().toString();
+        if (TextUtils.isEmpty(address)) {
+            mAddress.setError("Required.");
+            valid = false;
+        }
+
+        String country = mCountry.getText().toString();
+        if (TextUtils.isEmpty(country)) {
+            mCountry.setError("Required.");
+            valid = false;
+        }
+
+        String city = mCity.getText().toString();
+        if (city.equals("Select")) {
+            mCity.setError("Required.");
+            valid = false;
+        }
+
+        String state = mState.getText().toString();
+        if (state.equals("Select")) {
+            mState.setError("Required.");
+            valid = false;
+        }
+
+        String zipCode = mZipCode.getText().toString();
+        if (TextUtils.isEmpty(zipCode)) {
+            mZipCode.setError("Required.");
+            valid = false;
+        } else if (!Utils.isValidZipCode(zipCode)) {
+            mZipCode.setError("Invalid Zip.");
+            valid = false;
+        }
+
+        return DEBUG || valid;
+    }
+
+    private void takePhoto() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
 }
