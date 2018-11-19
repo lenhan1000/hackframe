@@ -53,9 +53,6 @@ public class PendantModule {
                     Log.e(TAG, "Failed to connect");
                 } else {
                     Log.i(TAG, "Connected");
-                    app.getTemp();
-                    app.getAccel();
-                    app.getBattery();
                 }
                 return null;
             }

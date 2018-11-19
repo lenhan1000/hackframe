@@ -2,6 +2,7 @@ package com.example.silc.hackathonframework.dagger.component;
 
 import android.app.Activity;
 
+import com.example.silc.hackathonframework.controllers.pendant.AccelerationComponentController;
 import com.example.silc.hackathonframework.dagger.module.AppModule;
 import com.example.silc.hackathonframework.dagger.module.LocationModule;
 import com.example.silc.hackathonframework.dagger.module.PendantModule;
@@ -22,6 +23,7 @@ import dagger.Component;
 @Component(modules = {AppModule.class, PendantModule.class})
 public interface PendantComponent {
     void inject(Activity activity);
+    void inject(AccelerationComponentController controller);
 
     Temperature.Sensor getTemperatureSensor();
     Accelerometer getAccelerometer();

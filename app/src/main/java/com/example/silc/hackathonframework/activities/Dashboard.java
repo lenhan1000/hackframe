@@ -55,6 +55,12 @@ public class Dashboard extends AppBarActivity implements View.OnClickListener,
                 startActivity(new Intent(context, PetActivities.class));
             }
         });
+        binding.buttonProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(context, PetProfile.class));
+            }
+        });
     }
 
     @Override

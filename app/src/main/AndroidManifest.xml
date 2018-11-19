@@ -50,7 +50,8 @@
 
         <activity android:name=".activities.DeviceScan" />
         <activity android:name=".activities.PetProfile" />
-        <activity android:name=".activities.PetActivities"></activity>
+        <activity android:name=".activities.PetActivities" />
+        <activity android:name=".activities.PendantControll"></activity>
     </application>
 
 </manifest>

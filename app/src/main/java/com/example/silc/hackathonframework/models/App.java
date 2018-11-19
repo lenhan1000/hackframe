@@ -102,7 +102,6 @@ public class App extends Application implements
         super.onCreate();
         context = this;
         instanceIdRoute = context.getResources().getString(R.string.api_user_instance_id);
-//        this.deleteDatabase("fetch-db");
         getComponent().inject(this);
         accelerationList = new ArrayList<Accel>();
 //        bindPendant();
@@ -200,11 +199,8 @@ public class App extends Application implements
                 .build();
     }
 
-    public PendantComponent getPendantComponent(BtleService.LocalBinder binder) {
-        return DaggerPendantComponent.builder()
-                    .application(getApp())
-                    .pendant(new PendantModule(binder))
-                    .build();
+    public PendantComponent getPendantComponent() {
+        return pendantComponent;
     }
 
     private void bindPendant(){
@@ -216,9 +212,11 @@ public class App extends Application implements
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             BtleService.LocalBinder binder = (BtleService.LocalBinder) iBinder;
-            pendantComponent = getPendantComponent(binder);
-            startPendent();
-
+            pendantComponent = DaggerPendantComponent.builder()
+                    .application(getApp())
+                    .pendant(new PendantModule(binder))
+                    .build();
+            startPendant();
         }
 
         @Override
@@ -227,8 +225,15 @@ public class App extends Application implements
         }
     };
 
-    private void startPendent(){
+    private void startPendant(){
         board = pendantComponent.getMetaWearBoard();
+    }
+
+    public boolean isBoardConnected(){
+        if (board == null){
+            return false;
+        }
+        return board.isConnected();
     }
 
     public void getTemp(){
@@ -247,35 +252,6 @@ public class App extends Application implements
             @Override
             public Void then(Task<Route> task) throws Exception {
                 tempSensor.read();
-                return null;
-            }
-        });
-    }
-
-    public void getAccel(){
-        accelerometer = pendantComponent.getAccelerometer();
-        accelerometer.configure()
-                .odr(1f)
-                .range(6f)
-                .commit();
-        accelerometer.acceleration().addRouteAsync(new RouteBuilder() {
-            @Override
-            public void configure(RouteComponent source) {
-                source.stream(new Subscriber() {
-                    @Override
-                    public void apply(Data data, Object... env) {
-                        Log.e("Pendant Accelerometer",
-                                new Accel(data.value(Acceleration.class)).toString() + ',');
-                        accelerationList.add(new Accel(data.value(Acceleration.class)));
-                        appDb.accelDao().insertAll(new Accel(data.value(Acceleration.class)));
-                    }
-                });
-            }
-        }).continueWith(new Continuation<Route, Void>() {
-            @Override
-            public Void then(Task<Route> task) throws Exception {
-                accelerometer.acceleration().start();
-                accelerometer.start();
                 return null;
             }
         });
@@ -308,6 +284,10 @@ public class App extends Application implements
                 locationCallback,
                 null
         );
+    }
+
+    public void clearAppDatabase(){
+        this.deleteDatabase("fetch-db");
     }
 
     public void setUpProfilePicture(){
