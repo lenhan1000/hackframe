@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.ProcessLifecycleOwner;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.ComponentName;
@@ -71,6 +72,7 @@ public class App extends Application implements
     private static final String TAG = "models.App";
     private static Context context;
     private static String instanceIdRoute;
+    private String defaultPetRoute;
     static final int PERMISSION_REQUEST_WRITE = 1;
 
     private PendantComponent pendantComponent;
@@ -104,22 +106,12 @@ public class App extends Application implements
         instanceIdRoute = context.getResources().getString(R.string.api_user_instance_id);
         getComponent().inject(this);
         accelerationList = new ArrayList<Accel>();
-//        bindPendant();
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleListener);
+        if(isBluetoothAvailable()) {
+            bindPendant();
+        }
 
-//        final Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Log.e(TAG, "ITS ME DIO");
-//                ObjectMapper mapper = new ObjectMapper();
-//                try {
-//                    Log.e(TAG,mapper.writeValueAsString(accelerationList));
-//                }catch(IOException e){
-//                    e.printStackTrace();
-//                }
-//            }
-//        }, 300000);
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleListener);
+        defaultPetRoute = setDefaultPet();
     }
 
 
@@ -182,6 +174,11 @@ public class App extends Application implements
             else {
                 if (id == getResources().getString(R.string.api_user_location)){
                     Log.d(TAG, "Update location success");
+                } else if (id == defaultPetRoute){
+                    JSONObject pet = res.getJSONObject("msg");
+                    Pet.setSelected(pet.getString("name"),
+                            pet.getString("id"),
+                            this);
                 }
                 else {
 
@@ -234,6 +231,10 @@ public class App extends Application implements
             return false;
         }
         return board.isConnected();
+    }
+
+    public boolean isBluetoothAvailable(){
+        return BluetoothAdapter.getDefaultAdapter() != null;
     }
 
     public void getTemp(){
@@ -310,5 +311,12 @@ public class App extends Application implements
                 e.printStackTrace();
             }
         }
+    }
+
+    public String setDefaultPet(){
+        if (Pet.getSelectedId(this)==""){
+            return Pet.getFirstPet(this);
+        }
+        return "";
     }
 }

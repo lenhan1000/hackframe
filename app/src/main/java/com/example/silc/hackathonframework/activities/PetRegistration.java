@@ -31,7 +31,7 @@ import java.util.GregorianCalendar;
 public class PetRegistration extends BaseActivityLoggedIn implements Http2Request.Http2RequestListener{
     private static final String TAG = "activities.PetRegistration";
     private static final boolean DEBUG = true;
-    private static final Integer AGE_LIMIT = 30;
+    private static final int AGE_LIMIT = Pet.getAgeLimit();
     private Pet pet;
     private String catBreedRoute;
     private String dogBreedRoute;
@@ -69,7 +69,7 @@ public class PetRegistration extends BaseActivityLoggedIn implements Http2Reques
                         }
                     });
                 }
-                if(id == createRoute){
+                else if(id == createRoute){
                     startActivity(new Intent(getApplicationContext(), PetList.class));
                     finish();
                 }

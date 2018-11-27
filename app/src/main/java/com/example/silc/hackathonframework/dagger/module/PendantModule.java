@@ -1,9 +1,11 @@
 package com.example.silc.hackathonframework.dagger.module;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.nfc.Tag;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.silc.hackathonframework.models.App;
@@ -38,9 +40,14 @@ public class PendantModule {
 
     @Provides
     @Singleton
-    public BluetoothDevice provideBluetoothDevice(BluetoothManager manager){
-        return manager.getAdapter()
-                .getRemoteDevice(MW_MAC_ADDRESS);
+    public BluetoothDevice provideBluetoothDevice(BluetoothAdapter adapter){
+        return adapter.getRemoteDevice(MW_MAC_ADDRESS);
+    }
+
+    @Provides
+    @Singleton
+    public BluetoothAdapter provideBluetoothAdapter(BluetoothManager manager){
+        return manager.getAdapter();
     }
 
     @Provides

@@ -6,8 +6,11 @@ import android.databinding.BaseObservable;
 import com.example.silc.hackathonframework.R;
 import com.example.silc.hackathonframework.helpers.Utils;
 
-public abstract class Model{
-    Model(){};
+import java.util.Observable;
+
+public abstract class ModelObservable extends BaseObservable {
+
+    ModelObservable(){};
 
     public static String getToken(Context context){
         return Utils.getStringSharedPreferences(context,

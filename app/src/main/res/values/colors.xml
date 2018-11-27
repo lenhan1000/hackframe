@@ -5,6 +5,7 @@
     <color name="colorPrimaryDark">#5d82a6</color>
     <color name="colorSecondaryDark">#71a384</color>
     <color name="colorPrimaryDarkFaded">#82302c29</color>
+    <color name="solidBackgroundDark">#302c29</color>
     <color name="colorBackgroundDark">#f7e1d3</color>
     <color name="colorBackgroundDarkFaded">#66615d</color>
     <color name="colorAccent">#41a967</color>

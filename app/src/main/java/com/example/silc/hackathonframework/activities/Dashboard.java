@@ -16,6 +16,7 @@ import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.helpers.Utils;
 import com.example.silc.hackathonframework.R;
 import com.example.silc.hackathonframework.models.App;
+import com.example.silc.hackathonframework.models.Pet;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
@@ -47,7 +48,7 @@ public class Dashboard extends AppBarActivity implements View.OnClickListener,
                 mContentFrame,
                 true);
         ((App) getApplication()).getComponent().inject(this);
-        getSupportActionBar().setTitle("Champ");
+        getSupportActionBar().setTitle(Pet.getSelectedName(this));
         getSupportActionBar().setSubtitle("Last Synced " + Utils.getCurrentTime());
         binding.buttonActivity.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -63,14 +63,14 @@
                             app:civ_circle_background_color="@color/colorPrimaryDark" />
 
                         <android.support.design.widget.TextInputLayout
-                            android:id="@+id/input_layout_dislpayName"
+                            android:id="@+id/input_layout_Name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:paddingTop="10dp">
 
                             <android.support.design.widget.TextInputEditText
-                                android:id="@+id/displayName"
+                                android:id="@+id/name"
                                 style="@style/editTextProfile"
                                 android:layout_width="wrap_content"
                                 android:text="@{pet.getName()}"
@@ -107,7 +107,7 @@
                             android:id="@+id/age"
                             style="@style/editTextProfile"
                             android:hint="Age"
-                            android:text="@{Double.toString(pet.age)}"
+                            android:text="@{pet.getAgeString()}"
                             tools:layout_editor_absoluteX="16dp"
                             tools:layout_editor_absoluteY="16dp" />
 
@@ -122,7 +122,7 @@
                             android:id="@+id/weight"
                             style="@style/editTextProfile"
                             android:hint="Weight"
-                            android:text="@{Double.toString(pet.weight)}"
+                            android:text="@{pet.getWeightString()}"
                             tools:layout_editor_absoluteX="16dp"
                             tools:layout_editor_absoluteY="16dp" />
 
@@ -167,7 +167,7 @@
                             android:id="@+id/birth"
                             style="@style/editTextProfile"
                             android:hint="Birth"
-                            android:text="@{pet.getBirth().toString()}"
+                            android:text="@{pet.getBirthString()}"
                             tools:layout_editor_absoluteX="16dp"
                             tools:layout_editor_absoluteY="16dp" />
 

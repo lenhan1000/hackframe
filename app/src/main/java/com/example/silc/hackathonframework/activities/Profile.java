@@ -215,24 +215,13 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
                     loadInfo(info);
                 } else {
                     Log.e(TAG, body.getString("msg"));
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, msg,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
+                    runOnUiThread(()-> Toast.makeText(context, msg,
+                                    Toast.LENGTH_SHORT).show());
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "An error occured",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(context, "An error occured",
+                                Toast.LENGTH_SHORT).show());
             }
         } else if (id.equals(getString(R.string.api_user_update))) {
             try {
@@ -241,23 +230,13 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
                     saveUserUiUpdate();
                 } else {
                     Log.e(TAG, body.getString("msg"));
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, msg,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    runOnUiThread(() -> Toast.makeText(context, msg,
+                                    Toast.LENGTH_SHORT).show());
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "An error occurred",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+                runOnUiThread(() ->Toast.makeText(context, "An error occurred",
+                                Toast.LENGTH_SHORT).show());
             }
         }
     }
@@ -355,19 +334,16 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
     }
 
     private void saveUserUiUpdate() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                findViewById(R.id.editFloatingBtn).clearAnimation();
-                fab.setImageResource(R.drawable.ic_edit_pastel_64dp);
-                mDisplayName.setFocusable(false);
-                mEmail.setFocusable(false);
-                mAddress.setFocusable(false);
-                mZipCode.setFocusable(false);
-                boolFab = false;
-                Toast.makeText(context, "Saved Successful",
-                        Toast.LENGTH_SHORT).show();
-            }
+        runOnUiThread(() -> {
+            findViewById(R.id.editFloatingBtn).clearAnimation();
+            fab.setImageResource(R.drawable.ic_edit_pastel_64dp);
+            mDisplayName.setFocusable(false);
+            mEmail.setFocusable(false);
+            mAddress.setFocusable(false);
+            mZipCode.setFocusable(false);
+            boolFab = false;
+            Toast.makeText(context, "Saved Successful",
+                    Toast.LENGTH_SHORT).show();
         });
     }
 

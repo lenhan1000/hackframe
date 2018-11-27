@@ -52,15 +52,10 @@ public class PendantControll extends AppBarActivity {
             public void onClick(View view) {
                 if(!controller.isRunning()) {
                     controller.start();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, "START",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    Toast.makeText(context, "START",
+                            Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
         });
         binding.stop.setOnClickListener(new View.OnClickListener() {
             @Override

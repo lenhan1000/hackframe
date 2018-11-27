@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ public class PetList extends AppBarActivity implements Http2Request.Http2Request
     private FloatingActionButton fab;
     private LinearLayout contentView;
     private ArrayList<LinearLayout> viewArray;
+    private LinearLayout selected;
     private ActivityPetListBinding binding;
     private View.OnClickListener mOnClickListener
             = new View.OnClickListener() {
@@ -78,7 +80,9 @@ public class PetList extends AppBarActivity implements Http2Request.Http2Request
                     );
                     for (int i = 0; i < pets.size(); i++){
                         runOnUiThread(new PetProfileRunnable(
-                                pets.get(i).getString("name")));
+                                pets.get(i).getString("name"),
+                                pets.get(i).getString("id"))
+                        );
                     }
                 }
                 else {
@@ -93,13 +97,19 @@ public class PetList extends AppBarActivity implements Http2Request.Http2Request
 
     class PetProfileRunnable implements Runnable{
         String name;
-        PetProfileRunnable(String name) {this.name = name;}
+        String id;
+        PetProfileRunnable(String name, String id) {
+            this.name = name;
+            this.id = id;
+        }
         public void run(){
-            createPetProfileButton(name);
+            createPetProfileButton(name, id);
         }
     }
 
-    private void createPetProfileButton(String name){
+    private void createPetProfileButton(String name, String id){
+        String selectedId = Pet.getSelectedId(context);
+
         //Set up view
         LinearLayout layout = new LinearLayout(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -109,11 +119,10 @@ public class PetList extends AppBarActivity implements Http2Request.Http2Request
         params.setMargins(10, 10, 10, 0);
         layout.setLayoutParams(params);
         layout.setPadding(10, 10, 10,10);
-        layout.setBackgroundResource(R.drawable.button_dashboard_standard);
         layout.setOrientation(LinearLayout.HORIZONTAL);
 
         //Set up picture
-        ImageButton pic = new ImageButton(context);
+        ImageView pic = new ImageView(context);
         pic.setId(1);
         pic.setImageResource(R.drawable.ic_dog_pastel_64dp);
         pic.setForegroundGravity(Gravity.CENTER_VERTICAL);
@@ -132,9 +141,38 @@ public class PetList extends AppBarActivity implements Http2Request.Http2Request
         text.setTextSize(30);
         layout.addView(text);
 
-
-        contentView.addView(layout);
+        layout.setTag(R.string.pet_preference_name, name);
+        layout.setTag(R.string.pet_preference_id, id);
+        if (selectedId.equals(id)){
+           select(layout);
+           selected = layout;
+        }else {
+           deselect(layout);
+        }        contentView.addView(layout);
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (view != selected) {
+                    select(view);
+                    deselect(selected);
+                    selected = (LinearLayout) view;
+                }
+            }
+        });
         viewArray.add(layout);
     }
+
+    private void select(View view){
+        Pet.setSelected(view.getTag(R.string.pet_preference_name).toString(),
+                view.getTag(R.string.pet_preference_id).toString(),
+                this
+                );
+        view.setBackgroundColor(getColor(R.color.colorAccent));
+    }
+
+    private void deselect(View view){
+        view.setBackgroundResource(R.drawable.button_dashboard_standard);
+    }
+
 
 }
