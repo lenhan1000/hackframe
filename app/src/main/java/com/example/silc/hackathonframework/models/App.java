@@ -111,7 +111,6 @@ public class App extends Application implements
         }
 
         ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleListener);
-        defaultPetRoute = setDefaultPet();
     }
 
 
@@ -313,10 +312,10 @@ public class App extends Application implements
         }
     }
 
-    public String setDefaultPet(){
+    public void setDefaultPet(){
+        defaultPetRoute = "";
         if (Pet.getSelectedId(this)==""){
-            return Pet.getFirstPet(this);
+            defaultPetRoute = Pet.getFirstPet(this);
         }
-        return "";
     }
 }

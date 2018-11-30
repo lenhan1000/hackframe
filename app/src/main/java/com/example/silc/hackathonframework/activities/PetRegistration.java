@@ -62,12 +62,7 @@ public class PetRegistration extends BaseActivityLoggedIn implements Http2Reques
                 if(id == catBreedRoute || id == dogBreedRoute){
                     final String[] info = Utils.getStringArrayFromJSONArray(
                             res.getJSONArray("msg"));
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            inflate_breed(info);
-                        }
-                    });
+                    runOnUiThread(() -> inflate_breed(info));
                 }
                 else if(id == createRoute){
                     startActivity(new Intent(getApplicationContext(), PetList.class));
@@ -82,9 +77,7 @@ public class PetRegistration extends BaseActivityLoggedIn implements Http2Reques
     private void inflate_name(){
         LayoutInflater.from(context).inflate(R.layout.activity_pet_registration_name,
                 mContentFrame);
-        mContentFrame.findViewById(R.id.nextButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        mContentFrame.findViewById(R.id.nextButton).setOnClickListener((View view) -> {
                 EditText inputView = mContentFrame.findViewById(R.id.infoView);
                 String input = inputView.getText().toString();
                 if (TextUtils.isEmpty(input) && !DEBUG){
@@ -93,7 +86,6 @@ public class PetRegistration extends BaseActivityLoggedIn implements Http2Reques
                 }
                 pet.setName(input);
                 inflate_type();
-            }
         });
     }
 
@@ -101,19 +93,13 @@ public class PetRegistration extends BaseActivityLoggedIn implements Http2Reques
         mContentFrame.removeAllViews();
         LayoutInflater.from(context).inflate(R.layout.activity_pet_registration_type,
                 mContentFrame);
-        mContentFrame.findViewById(R.id.buttonCat).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        mContentFrame.findViewById(R.id.buttonCat).setOnClickListener((View view) -> {
                 pet.setType("Cat");
                 Pet.getBreedList(context,"Cat");
-            }
         });
-        mContentFrame.findViewById(R.id.buttonDog).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        mContentFrame.findViewById(R.id.buttonDog).setOnClickListener((View view) -> {
                 pet.setType("Dog");
                 Pet.getBreedList(context, "Dog");
-            }
         });
     }
 
@@ -130,12 +116,8 @@ public class PetRegistration extends BaseActivityLoggedIn implements Http2Reques
                 pet.setBreed(s);
             }
         });
-        mContentFrame.findViewById(R.id.nextButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inflate_gender();
-            }
-        });
+        mContentFrame.findViewById(R.id.nextButton).setOnClickListener(
+                (View v) -> inflate_gender());
     }
 
     private void inflate_gender(){
@@ -143,40 +125,32 @@ public class PetRegistration extends BaseActivityLoggedIn implements Http2Reques
         mContentFrame.removeAllViews();
         LayoutInflater.from(context).inflate(R.layout.activity_pet_registration_gender,
                 mContentFrame);
-        mContentFrame.findViewById(R.id.buttonMale).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pet.setGender(true);
-                inflate_spay();
-            }
-        });
-        mContentFrame.findViewById(R.id.buttonFemale).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pet.setGender(false);
-                inflate_spay();
-            }
-        });
+        mContentFrame.findViewById(R.id.buttonMale).setOnClickListener(
+                (View view) ->{
+                    pet.setGender(true);
+                    inflate_spay();
+                });
+        mContentFrame.findViewById(R.id.buttonFemale).setOnClickListener(
+                (View view) -> {
+                    pet.setGender(false);
+                    inflate_spay();
+                    });
     }
 
     private void inflate_spay(){
         mContentFrame.removeAllViews();;
         LayoutInflater.from(context).inflate(R.layout.activity_pet_registration_spayed,
                 mContentFrame);
-        mContentFrame.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pet.setSpayed(true);
-                inflate_age();
-            }
-        });
-        mContentFrame.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pet.setSpayed(false);
-                inflate_age();
-            }
-        });
+        mContentFrame.findViewById(R.id.buttonYes).setOnClickListener(
+                (View view) -> {
+                    pet.setSpayed(true);
+                    inflate_age();
+                });
+        mContentFrame.findViewById(R.id.buttonNo).setOnClickListener(
+                (View view) -> {
+                    pet.setSpayed(false);
+                    inflate_age();
+                });
     }
 
     private void inflate_age(){
@@ -195,13 +169,8 @@ public class PetRegistration extends BaseActivityLoggedIn implements Http2Reques
                 pet.setAge((double) i);
             }
         });
-        mContentFrame.findViewById(R.id.nextButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inflate_weight();
-            }
-        });
-
+        mContentFrame.findViewById(R.id.nextButton).setOnClickListener(
+                (View view) -> inflate_weight());
     }
 
     private void inflate_weight(){
@@ -219,13 +188,11 @@ public class PetRegistration extends BaseActivityLoggedIn implements Http2Reques
                 weight.setText(w);
             }
         });
-        mContentFrame.findViewById(R.id.nextButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pet.setWeight(wheelView.getDegreesAngle());
-                inflate_birth();
-            }
-        });
+        mContentFrame.findViewById(R.id.nextButton).setOnClickListener(
+                (View view) -> {
+                    pet.setWeight(wheelView.getDegreesAngle());
+                    inflate_birth();
+                });
     }
 
     private void inflate_birth(){
@@ -233,17 +200,15 @@ public class PetRegistration extends BaseActivityLoggedIn implements Http2Reques
         LayoutInflater.from(context).inflate(R.layout.activity_pet_registration_birth,
                 mContentFrame);
         final DatePicker dateView = mContentFrame.findViewById(R.id.infoView);
-        mContentFrame.findViewById(R.id.nextButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Date date = new GregorianCalendar(dateView.getYear(),
-                        dateView.getMonth(),
-                        dateView.getDayOfMonth())
-                        .getTime();
-                pet.setBirth(date);
-                register();
-            }
-        });
+        mContentFrame.findViewById(R.id.nextButton).setOnClickListener(
+                (View view) -> {
+                    Date date = new GregorianCalendar(dateView.getYear(),
+                            dateView.getMonth(),
+                            dateView.getDayOfMonth())
+                            .getTime();
+                    pet.setBirth(date);
+                    register();
+                });
     }
 
     private void register(){

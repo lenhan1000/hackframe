@@ -45,24 +45,20 @@ public class PendantControll extends AppBarActivity {
                 R.layout.activity_pendant_controll,
                 mContentFrame,
                 true);
+        navigation.getMenu().findItem(R.id.navigation_recording).setChecked(true);
         controller = new AccelerationComponentController((App) getApplication());
         checkAndCreateFolder();
-        binding.start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!controller.isRunning()) {
-                    controller.start();
-                    Toast.makeText(context, "START",
-                            Toast.LENGTH_SHORT).show();
-                    }
-                }
+        binding.start.setOnClickListener((View view) -> {
+            if(!controller.isRunning()) {
+                controller.start();
+                Toast.makeText(context, "START",
+                        Toast.LENGTH_SHORT).show();
+            }
         });
-        binding.stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(controller.isRunning())
-                    controller.stop();
-                    popFileNameDialog();
+        binding.stop.setOnClickListener((View view) -> {
+            if(controller.isRunning()) {
+                controller.stop();
+                popFileNameDialog();
             }
         });
 
@@ -71,6 +67,12 @@ public class PendantControll extends AppBarActivity {
     @Override
     public void onRequestFinished(String id, JSONObject res){
 
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        navigation.getMenu().findItem(R.id.navigation_recording).setChecked(true);
     }
 
     private void saveToJSON(String filename){
@@ -109,30 +111,23 @@ public class PendantControll extends AppBarActivity {
         input.setLayoutParams(lp);
         dialog.setView(input);
         dialog.setPositiveButton("Save",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        String filename = input.getText().toString();
-                        if(filename.isEmpty()){
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context, "Invalid Name",
-                                            Toast.LENGTH_SHORT);
-                                }
-                            });
-                        }else {
-                            saveToJSON(input.getText().toString());
-                            startActivity(new Intent(context, PendantControll.class));
-                        }
-                    }
-                });
-        dialog.setNegativeButton("Discard", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
+            (DialogInterface dialogInterface, int i) -> {
+                String filename = input.getText().toString();
+                if(filename.isEmpty()){
+                    runOnUiThread(() ->
+                            Toast.makeText(context, "Invalid Name",
+                                    Toast.LENGTH_SHORT)
+                    );
+                }else {
+                    saveToJSON(input.getText().toString());
+                    startActivity(new Intent(context, PendantControll.class));
+                }
         });
+
+        dialog.setNegativeButton("Discard",
+            (DialogInterface dialogInterface, int i) ->
+            dialogInterface.cancel());
+
         dialog.show();
     }
 }

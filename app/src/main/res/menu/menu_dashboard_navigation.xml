@@ -18,9 +18,9 @@
         android:title="@string/title_pets" />
 
     <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings_black_24dp"
-        android:title="@string/title_settings" />
+        android:id="@+id/navigation_recording"
+        android:icon="@drawable/ic_baseline_radio_checked_24dp"
+        android:title="Record" />
 
     <item
         android:id="@+id/navigation_more"

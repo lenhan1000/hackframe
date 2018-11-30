@@ -139,22 +139,20 @@ public class Registration extends BaseActivity implements SingleChoiceDialogFrag
         mCarrierField = mContentFrame.findViewById(R.id.carrier);
 
         //Buttons
-        mContentFrame.findViewById(R.id.nextButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "nextButtonPressed");
-                if(!validateFormBasic()){
-                    return;
-                }
-                Log.d(TAG, "nextViewInit");
-                //Construct a User object
-                user.setDisplayName(mDisplayNameField.getText().toString());
-                user.setCountryCode(mCountryCodeField.getSelectedCountryCode());
-                user.setmobilePhone(mMobileField.getText().toString());
-                user.setCarrier(mCarrierField.getText().toString());
-                inflate_address();
-            }
-        });
+        mContentFrame.findViewById(R.id.nextButton).setOnClickListener(
+                (View view) -> {
+                    Log.d(TAG, "nextButtonPressed");
+                    if (!validateFormBasic()) {
+                        return;
+                    }
+                    Log.d(TAG, "nextViewInit");
+                    //Construct a User object
+                    user.setDisplayName(mDisplayNameField.getText().toString());
+                    user.setCountryCode(mCountryCodeField.getSelectedCountryCode());
+                    user.setmobilePhone(mMobileField.getText().toString());
+                    user.setCarrier(mCarrierField.getText().toString());
+                    inflate_address();
+                });
 
     }
 
@@ -176,29 +174,27 @@ public class Registration extends BaseActivity implements SingleChoiceDialogFrag
         mStateList.setOnClickListener(this);
         mCityList.setOnClickListener(this);
         //Buttons
-        mContentFrame.findViewById(R.id.nextButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "nextButtonPressed");
-                if(!validateFormAddress()){
-                    return;
-                }
-                Log.d(TAG, "nextViewInit");
-                //Construct a User object
-                try {
-                    user.setAddress(mAddressField.getText().toString());
-                    user.setCountry(geoWrapper.country_id,
-                            mCountryList.getText().toString());
-                    user.setState(geoWrapper.state_id,
-                            mStateList.getText().toString());
-                    user.setCity(mCityList.getText().toString());
-                    user.setZipCode(mZipCodeField.getText().toString());
-                    inflate_cred();
-                }catch (JSONException e){
-                    e.printStackTrace();
-                }
-            }
-        });
+        mContentFrame.findViewById(R.id.nextButton).setOnClickListener(
+                (View view) -> {
+                    Log.d(TAG, "nextButtonPressed");
+                    if (!validateFormAddress()) {
+                        return;
+                    }
+                    Log.d(TAG, "nextViewInit");
+                    //Construct a User object
+                    try {
+                        user.setAddress(mAddressField.getText().toString());
+                        user.setCountry(geoWrapper.country_id,
+                                mCountryList.getText().toString());
+                        user.setState(geoWrapper.state_id,
+                                mStateList.getText().toString());
+                        user.setCity(mCityList.getText().toString());
+                        user.setZipCode(mZipCodeField.getText().toString());
+                        inflate_cred();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
     private void inflate_cred(){

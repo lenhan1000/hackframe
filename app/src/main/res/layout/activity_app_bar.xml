@@ -1,52 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
     <data> </data>
-    <android.support.constraint.ConstraintLayout
+    <android.support.v4.widget.DrawerLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBackgroundDark"
-        tools:context=".activities.AppBarActivity">
+        android:fitsSystemWindows="true">
 
-        <android.support.design.widget.BottomNavigationView
-                android:id="@+id/navigation"
-                android:transitionName="navigation"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorBackgroundDark"
+            tools:context=".activities.AppBarActivity">
+
+            <android.support.design.widget.BottomNavigationView
+                    android:id="@+id/navigation"
+                    android:transitionName="navigation"
+                    android:layout_width="0dp"
+                    android:layout_height="?android:attr/actionBarSize"
+                    android:layout_marginBottom="1dp"
+                    android:background="@color/colorPrimary"
+                    app:itemIconTint="@drawable/bottom_nag_colors"
+                    app:itemTextColor="@drawable/bottom_nag_colors"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:menu="@menu/menu_dashboard_navigation" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/actionBar"
+                android:transitionName="appbar"
                 android:layout_width="0dp"
-                android:layout_height="?android:attr/actionBarSize"
-                android:layout_marginBottom="1dp"
+                android:layout_height="56dp"
                 android:background="@color/colorPrimary"
-                app:itemIconTint="@drawable/bottom_nag_colors"
-                app:itemTextColor="@drawable/bottom_nag_colors"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:menu="@menu/menu_dashboard_navigation" />
+                android:elevation="0dp"
+                android:fitsSystemWindows="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:subtitleTextColor="@color/textColorButton"
+                app:titleTextColor="@color/textColor" />
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/actionBar"
-            android:transitionName="appbar"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:background="@color/colorPrimary"
-            android:elevation="0dp"
+            <FrameLayout
+                android:id='@+id/content'
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/navigation"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/actionBar">
+            </FrameLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.design.widget.NavigationView
+            android:id="@+id/navDrawer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:subtitleTextColor="@color/textColorButton"
-            app:titleTextColor="@color/textColor" />
+            android:layout_gravity="start"
+            app:menu="@menu/main_drawer_view"
+            app:headerLayout="@layout/drawer_header"/>
 
-        <FrameLayout
-            android:id='@+id/content'
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/navigation"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/actionBar">
-        </FrameLayout>
-
-    </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.DrawerLayout>
 </layout>

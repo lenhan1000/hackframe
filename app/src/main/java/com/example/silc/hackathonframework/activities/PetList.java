@@ -33,18 +33,6 @@ public class PetList extends AppBarActivity implements Http2Request.Http2Request
     private ArrayList<LinearLayout> viewArray;
     private LinearLayout selected;
     private ActivityPetListBinding binding;
-    private View.OnClickListener mOnClickListener
-            = new View.OnClickListener() {
-        @Override
-        public void onClick(View v){
-            switch(v.getId()){
-                case R.id.FloatingBtn: {
-                    startActivity(new Intent(context, PetRegistration.class));
-                    finish();
-                }
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +44,10 @@ public class PetList extends AppBarActivity implements Http2Request.Http2Request
         viewArray = new ArrayList<LinearLayout>();
         //Set up appbar, bottom nag, etc
         fab = binding.FloatingBtn;
-        fab.setOnClickListener(mOnClickListener);
+        fab.setOnClickListener((View v) -> {
+            startActivity(new Intent(context, PetRegistration.class));
+            finish();
+        });
         contentView = binding.petLayout;
         navigation.getMenu().findItem(R.id.navigation_pets).setChecked(true);
         petsRoute = Pet.getMyPets(context);
@@ -149,14 +140,11 @@ public class PetList extends AppBarActivity implements Http2Request.Http2Request
         }else {
            deselect(layout);
         }        contentView.addView(layout);
-        layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (view != selected) {
-                    select(view);
-                    deselect(selected);
-                    selected = (LinearLayout) view;
-                }
+        layout.setOnClickListener((View view) -> {
+            if (view != selected) {
+                select(view);
+                deselect(selected);
+                selected = (LinearLayout) view;
             }
         });
         viewArray.add(layout);

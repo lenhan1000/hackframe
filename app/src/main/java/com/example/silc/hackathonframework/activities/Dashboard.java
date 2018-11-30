@@ -50,18 +50,10 @@ public class Dashboard extends AppBarActivity implements View.OnClickListener,
         ((App) getApplication()).getComponent().inject(this);
         getSupportActionBar().setTitle(Pet.getSelectedName(this));
         getSupportActionBar().setSubtitle("Last Synced " + Utils.getCurrentTime());
-        binding.buttonActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(context, PetActivities.class));
-            }
-        });
-        binding.buttonProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(context, PetProfile.class));
-            }
-        });
+        binding.buttonActivity.setOnClickListener((View v) ->
+                startActivity(new Intent(context, PetActivities.class)));
+        binding.buttonProfile.setOnClickListener((View view) ->
+                startActivity(new Intent(context, PetProfile.class)));
     }
 
     @Override

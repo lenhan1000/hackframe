@@ -60,6 +60,7 @@ public class AccelerationComponentController {
                 });
             }
         });
+        accelerometer.stop();
     }
 
     public void start(){

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.silc.hackathonframework.R;
 import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.helpers.Utils;
+import com.example.silc.hackathonframework.models.App;
 import com.example.silc.hackathonframework.models.User;
 
 import org.json.JSONException;
@@ -49,12 +50,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         //Registration Direct
         final TextView regLink = findViewById(R.id.signUpLink);
         regLink.setText(Html.fromHtml("<u>Sign Up</u>"));
-        regLink.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                Intent intent = new Intent(getApplicationContext(), Registration.class);
-                startActivity(intent);
-                finish();
-            }
+        regLink.setOnClickListener((View v) -> {
+            Intent intent = new Intent(getApplicationContext(), Registration.class);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -132,18 +131,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         try {
             boolean success = res.getBoolean("success");
             if (!success) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Unsuccessful Login",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+                runOnUiThread(() ->  Toast.makeText(context, "Unsuccessful Login",
+                                Toast.LENGTH_SHORT).show()
+                );
 
                 Log.d(TAG, res.getString("msg"));
             } else {
                 User.processLogin(email, res.getString("token"), this);
-
+                ((App) getApplication()).setDefaultPet();
                 Intent intent = new Intent(getApplicationContext(), Dashboard.class);
                 startActivity(intent);
                 finish();
