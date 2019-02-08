@@ -1,10 +1,7 @@
 package com.example.silc.hackathonframework.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,14 +10,12 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v4.app.FragmentTransaction;
 
 
 import com.example.silc.hackathonframework.R;
 import com.example.silc.hackathonframework.fragments.SingleChoiceDialogFragment;
 import com.example.silc.hackathonframework.helpers.GeographyDialogWrapper;
 import com.example.silc.hackathonframework.helpers.Http2Request;
-import com.example.silc.hackathonframework.helpers.SingleChoiceDialogWrapper;
 import com.example.silc.hackathonframework.helpers.Utils;
 import com.example.silc.hackathonframework.models.*;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -29,14 +24,12 @@ import com.hbb20.CountryCodePicker;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 public class Registration extends BaseActivity implements SingleChoiceDialogFragment.NoticeDialogListener,
         View.OnClickListener, Http2Request.Http2RequestListener{
     private static final String TAG = "activities.Registration";
     private static final boolean DEBUG = false;
     private int dialog_id;
-    private User user;
+    private ClientUser clientUser;
 
     private EditText mEmailField;
     private EditText mPasswordField;
@@ -64,7 +57,7 @@ public class Registration extends BaseActivity implements SingleChoiceDialogFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         //Variables
-        user = new User();
+        clientUser = new ClientUser();
 
         //Requests
 
@@ -146,11 +139,11 @@ public class Registration extends BaseActivity implements SingleChoiceDialogFrag
                         return;
                     }
                     Log.d(TAG, "nextViewInit");
-                    //Construct a User object
-                    user.setDisplayName(mDisplayNameField.getText().toString());
-                    user.setCountryCode(mCountryCodeField.getSelectedCountryCode());
-                    user.setmobilePhone(mMobileField.getText().toString());
-                    user.setCarrier(mCarrierField.getText().toString());
+                    //Construct a ClientUser object
+                    clientUser.setDisplayName(mDisplayNameField.getText().toString());
+                    clientUser.setCountryCode(mCountryCodeField.getSelectedCountryCode());
+                    clientUser.setmobilePhone(mMobileField.getText().toString());
+                    clientUser.setCarrier(mCarrierField.getText().toString());
                     inflate_address();
                 });
 
@@ -181,15 +174,15 @@ public class Registration extends BaseActivity implements SingleChoiceDialogFrag
                         return;
                     }
                     Log.d(TAG, "nextViewInit");
-                    //Construct a User object
+                    //Construct a ClientUser object
                     try {
-                        user.setAddress(mAddressField.getText().toString());
-                        user.setCountry(geoWrapper.country_id,
+                        clientUser.setAddress(mAddressField.getText().toString());
+                        clientUser.setCountry(geoWrapper.country_id,
                                 mCountryList.getText().toString());
-                        user.setState(geoWrapper.state_id,
+                        clientUser.setState(geoWrapper.state_id,
                                 mStateList.getText().toString());
-                        user.setCity(mCityList.getText().toString());
-                        user.setZipCode(mZipCodeField.getText().toString());
+                        clientUser.setCity(mCityList.getText().toString());
+                        clientUser.setZipCode(mZipCodeField.getText().toString());
                         inflate_cred();
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -305,8 +298,8 @@ public class Registration extends BaseActivity implements SingleChoiceDialogFrag
         Log.d(TAG, "createAccount:" + email);
         if (!validateFormCred()) return;
 
-        user.setEmail(email);
-        JSONObject regUser = user.toJSON();
+        clientUser.setEmail(email);
+        JSONObject regUser = clientUser.toJSON();
         Utils.addtoJSON(regUser, "password", password);
         Http2Request regRequest = new Http2Request(this);
         regRequest.post(getString(R.string.api_base_url), registerUrl, regUser.toString());
@@ -324,9 +317,9 @@ public class Registration extends BaseActivity implements SingleChoiceDialogFrag
             if (!success) Log.d(TAG, res.getString("msg"));
             else {
                 if (id == registerUrl)
-                    login(user.getEmail(), mPasswordField.getText().toString());
+                    login(clientUser.getEmail(), mPasswordField.getText().toString());
                 else {
-                    User.processLogin(user.getEmail(), res.getString("token"), Registration.this);
+                    ClientUser.processLogin(clientUser.getEmail(), res.getString("token"), Registration.this);
                     App.sendInstanceId(FirebaseInstanceId.getInstance().getId());
                     Intent intent = new Intent(getApplicationContext(), Dashboard.class);
                     startActivity(intent);

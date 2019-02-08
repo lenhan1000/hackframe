@@ -1,7 +1,6 @@
 package com.example.silc.hackathonframework.models;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Parcelable;
 import android.os.Parcel;
 import android.util.Log;
@@ -17,16 +16,16 @@ import org.json.JSONObject;
 import java.util.Date;
 
 @IgnoreExtraProperties
-public class User extends Model implements Parcelable{
+public class ClientUser extends Model implements Parcelable{
     private static final String TAG = "models.Users";
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public User createFromParcel(Parcel in){
-            return new User(in);
+        public ClientUser createFromParcel(Parcel in){
+            return new ClientUser(in);
         }
 
-        public User[] newArray(int size) {
-            return new User[size];
+        public ClientUser[] newArray(int size) {
+            return new ClientUser[size];
         }
     };
 
@@ -41,7 +40,7 @@ public class User extends Model implements Parcelable{
     private String zipCode;
     private String countryCode;
 
-    public User(){
+    public ClientUser(){
         email=null;
         displayName= null;
         mobilePhone= null;
@@ -53,9 +52,9 @@ public class User extends Model implements Parcelable{
         zipCode= null;
         countryCode= null;
     }
-    public User(String displayName, String mobilePhone, String carrier, String zipCode,
-                String address, JSONObject country, JSONObject state, String city,
-                String countryCode, String email){
+    public ClientUser(String displayName, String mobilePhone, String carrier, String zipCode,
+                      String address, JSONObject country, JSONObject state, String city,
+                      String countryCode, String email){
         this.displayName = displayName;
         this.mobilePhone = mobilePhone;
         this.carrier = carrier;
@@ -127,7 +126,7 @@ public class User extends Model implements Parcelable{
     public void setCountryCode(String arg){  this.zipCode = arg; }
 
     //Parcelling
-    public User(Parcel in) {
+    public ClientUser(Parcel in) {
         this.displayName = in.readString();
         this.mobilePhone = in.readString();
         this.carrier = in.readString();
@@ -208,6 +207,14 @@ public class User extends Model implements Parcelable{
 
     }
 
+    public static String getAppEmail(Context context){
+        return Utils.getStringSharedPreferences(context,
+                context.getString(R.string.user_preference_email),
+                "",
+                context.getString(R.string.user_preference)
+        );
+    }
+
     public static String getUserInfo(Context context){
         String token = getToken(context);
         if (token.isEmpty()) return "";
@@ -218,14 +225,14 @@ public class User extends Model implements Parcelable{
         return infoUrl;
     }
 
-    public static String updateLocation(double latitude, double longtitude, Context context){
+    public static String updateLocation(double latitude, double longitude, Context context){
         //Construct JSON body
         JSONObject json = new JSONObject();
         try{
             Date date = new Date();
             json.put("date", date.getTime());
             json.put("lat", latitude);
-            json.put("long", longtitude);
+            json.put("long", longitude);
         }catch (JSONException e){
             e.printStackTrace();
         }

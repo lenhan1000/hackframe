@@ -2,10 +2,8 @@ package com.example.silc.hackathonframework.activities;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -14,15 +12,6 @@ import android.util.Log;
 
 import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.models.App;
-import com.example.silc.hackathonframework.models.User;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationAvailability;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-
-import javax.inject.Inject;
 
 public abstract class BaseActivityLoggedIn extends BaseActivity implements Http2Request.Http2RequestListener{
     private static final String TAG = "activities.LoggedIn";

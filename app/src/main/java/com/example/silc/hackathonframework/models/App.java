@@ -1,25 +1,17 @@
 package com.example.silc.hackathonframework.models;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.example.silc.hackathonframework.R;
@@ -27,18 +19,14 @@ import com.example.silc.hackathonframework.dagger.component.AppComponent;
 import com.example.silc.hackathonframework.dagger.component.DaggerAppComponent;
 import com.example.silc.hackathonframework.dagger.component.DaggerPendantComponent;
 import com.example.silc.hackathonframework.dagger.component.PendantComponent;
-import com.example.silc.hackathonframework.dagger.module.AppModule;
-import com.example.silc.hackathonframework.dagger.module.LocationModule;
 import com.example.silc.hackathonframework.dagger.module.NetworkModule;
 import com.example.silc.hackathonframework.dagger.module.PendantModule;
 import com.example.silc.hackathonframework.db.AppDatabase;
 import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.helpers.Utils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.mbientlab.metawear.Data;
 import com.mbientlab.metawear.MetaWearBoard;
 import com.mbientlab.metawear.Route;
@@ -46,7 +34,6 @@ import com.mbientlab.metawear.Subscriber;
 import com.mbientlab.metawear.android.BtleService;
 import com.mbientlab.metawear.builder.RouteBuilder;
 import com.mbientlab.metawear.builder.RouteComponent;
-import com.mbientlab.metawear.data.Acceleration;
 import com.mbientlab.metawear.module.Accelerometer;
 import com.mbientlab.metawear.module.Settings;
 import com.mbientlab.metawear.module.Temperature;
@@ -152,7 +139,7 @@ public class App extends Application implements
                     req.baseUrl,
                     instanceIdRoute,
                     js.toString(),
-                    User.getToken(context)
+                    ClientUser.getToken(context)
             );
         }catch (JSONException e){
             Log.e(TAG, e.getMessage());

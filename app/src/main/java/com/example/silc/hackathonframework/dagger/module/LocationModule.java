@@ -4,7 +4,7 @@ import android.location.Location;
 import android.util.Log;
 
 import com.example.silc.hackathonframework.models.App;
-import com.example.silc.hackathonframework.models.User;
+import com.example.silc.hackathonframework.models.ClientUser;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
@@ -55,7 +55,7 @@ public class LocationModule {
                     return;
                 }
                 for (Location l : loc.getLocations()){
-                    User.updateLocation(
+                    ClientUser.updateLocation(
                             l.getLatitude(),
                             l.getLongitude(),
                             app.getApplicationContext()

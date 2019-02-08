@@ -18,7 +18,7 @@ import com.example.silc.hackathonframework.R;
 import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.helpers.Utils;
 import com.example.silc.hackathonframework.models.Pet;
-import com.example.silc.hackathonframework.models.User;
+import com.example.silc.hackathonframework.models.ClientUser;
 import com.github.shchurov.horizontalwheelview.HorizontalWheelView;
 
 import org.json.JSONException;
@@ -217,6 +217,6 @@ public class PetRegistration extends BaseActivityLoggedIn implements Http2Reques
         req.post(getString(R.string.api_base_url),
                 getString(R.string.api_pet_create),
                 petjs.toString(),
-                User.getToken(context));
+                ClientUser.getToken(context));
     }
 }

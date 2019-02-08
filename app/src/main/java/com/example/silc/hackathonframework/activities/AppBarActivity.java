@@ -2,7 +2,10 @@ package com.example.silc.hackathonframework.activities;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -17,10 +20,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.example.silc.hackathonframework.R;
 import com.example.silc.hackathonframework.databinding.ActivityAppBarBinding;
 import com.example.silc.hackathonframework.helpers.Utils;
+import com.example.silc.hackathonframework.models.ClientUser;
+
+import java.io.File;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public abstract class AppBarActivity extends BaseActivityLoggedIn implements View.OnClickListener{
     private static final String TAG = "activities.AppBar";
@@ -34,38 +43,29 @@ public abstract class AppBarActivity extends BaseActivityLoggedIn implements Vie
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             getWindow().setExitTransition(null);
+            Pair<View, String> p1 = Pair.create(actionBar, "appbar");
+            Pair<View, String> p2 = Pair.create( navigation, "navigation");
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(AppBarActivity.this, p1, p2);
             switch (item.getItemId()) {
                 case R.id.navigation_profile: {
-                    Pair<View, String> p1 = Pair.create((View) actionBar, "appbar");
-                    Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
-                    ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(AppBarActivity.this, p1, p2);
-                    startActivity(new Intent(context, Profile.class), options.toBundle());
+                    startActivity(new Intent(context, Profile.class),
+                            options.toBundle());
                     return true;
                 }
                 case R.id.navigation_pets: {
-                    Log.d(TAG,"HERE");
-                    Pair<View, String> p1 = Pair.create((View) actionBar, "appbar");
-                    Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
-                    ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(AppBarActivity.this, p1, p2);
-                    startActivity(new Intent(context, PetList.class), options.toBundle());
+                    startActivity(new Intent(context, PetList.class),
+                            options.toBundle());
                     return true;
                 }
                 case R.id.navigation_dashboard:{
-                    Pair<View, String> p1 = Pair.create((View) actionBar, "appbar");
-                    Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
-                    ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(AppBarActivity.this, p1, p2);
-                    startActivity(new Intent(context, Dashboard.class), options.toBundle());
+                    startActivity(new Intent(context, Dashboard.class),
+                            options.toBundle());
                     return true;
                 }
                 case R.id.navigation_recording: {
-                    Pair<View, String> p1 = Pair.create((View) actionBar, "appbar");
-                    Pair<View, String> p2 = Pair.create((View) navigation, "navigation");
-                    ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(AppBarActivity.this, p1, p2);
-                    startActivity(new Intent(context, PendantControll.class), options.toBundle());
+                    startActivity(new Intent(context, PendantControll.class),
+                            options.toBundle());
                     return true;
                 }
                 case R.id.navigation_more: {
@@ -155,6 +155,7 @@ public abstract class AppBarActivity extends BaseActivityLoggedIn implements Vie
         actionBar.setOnMenuItemClickListener(menuItemClickListener);
         appBarBinding.drawerLayout.addDrawerListener(drawerListener);
         appBarBinding.navDrawer.setNavigationItemSelectedListener(navigationListener);
+        setDrawerHeader();
     }
 
     @Override
@@ -170,4 +171,15 @@ public abstract class AppBarActivity extends BaseActivityLoggedIn implements Vie
         }
     }
 
+    private void setDrawerHeader(){
+
+        File dir = Environment.getExternalStorageDirectory();
+        File img = new File(dir, "Pictures/profiles.png");
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        Bitmap bitmap = BitmapFactory.decodeFile(img.getAbsolutePath(), options);
+        View header = appBarBinding.navDrawer.getHeaderView(0);
+        ((CircleImageView) header.findViewById(R.id.profile_image)).setImageBitmap(bitmap);
+        ((TextView) header.findViewById(R.id.email)).setText(ClientUser.getAppEmail(this));
+    }
 }

@@ -3,33 +3,18 @@ package com.example.silc.hackathonframework.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.hardware.camera2.*;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,8 +24,8 @@ import com.example.silc.hackathonframework.fragments.SingleChoiceDialogFragment;
 import com.example.silc.hackathonframework.helpers.GeographyDialogWrapper;
 import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.helpers.Utils;
+import com.example.silc.hackathonframework.models.ClientUser;
 import com.example.silc.hackathonframework.models.State;
-import com.example.silc.hackathonframework.models.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,8 +33,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Profile extends AppBarActivity implements View.OnClickListener,
         Http2Request.Http2RequestListener, SingleChoiceDialogFragment.NoticeDialogListener {
@@ -59,7 +42,7 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
     private FloatingActionButton fab;
     private boolean boolFab;
     private int dialog_id;
-    private User user;
+    private ClientUser clientUser;
     private Context context;
 
     private TextInputEditText mEmail;
@@ -84,7 +67,7 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
                 true);
         context = this;
         boolFab = false;
-        user = new User();
+        clientUser = new ClientUser();
         fab = binding.editFloatingBtn;
         fab.setOnClickListener(this);
         navigation.getMenu().findItem(R.id.navigation_profile).setChecked(true);
@@ -107,7 +90,7 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
         //Wrappers
         geoDialog = new GeographyDialogWrapper(context);
 
-        User.getUserInfo(context);
+        ClientUser.getUserInfo(context);
 
         binding.profileImage.setOnClickListener(this);
 
@@ -245,14 +228,14 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
     public void onDialogTextSelect(int id, String dialog) {
         try {
             if (dialog_id == R.id.country) {
-                if (!user.getCountry().getString("name").equals(dialog)) {
+                if (!clientUser.getCountry().getString("name").equals(dialog)) {
                     mCountry.setText(dialog);
                     geoDialog.country_id = id + 1;
                     mState.setText("Select");
                     mCity.setText("Select");
                 }
             } else if (dialog_id == R.id.state) {
-                if (!user.getCountry().getString("name").equals(dialog)) {
+                if (!clientUser.getCountry().getString("name").equals(dialog)) {
                     mState.setText(dialog);
                     geoDialog.state_id = State.stateId(geoDialog.states, dialog);
                     mCity.setText("Select");
@@ -271,31 +254,28 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
                 context.getString(R.string.user_preference_email),
                 "",
                 context.getString(R.string.user_preference));
-        user.setEmail(email);
-        //Set up user object with info
-        user.setDisplayName(info.getString("displayName"));
-        user.setAddress(info.getString("address"));
-        user.setCity(info.getString("city"));
-        user.setZipCode(info.getString("zipCode"));
-        user.setCountry(info.getString("country"));
-        user.setState(info.getString("state"));
-        geoDialog.state_id = user.getState().getInt("id");
-        geoDialog.country_id = user.getCountry().getInt("id");
+        clientUser.setEmail(email);
+        //Set up clientUser object with info
+        clientUser.setDisplayName(info.getString("displayName"));
+        clientUser.setAddress(info.getString("address"));
+        clientUser.setCity(info.getString("city"));
+        clientUser.setZipCode(info.getString("zipCode"));
+        clientUser.setCountry(info.getString("country"));
+        clientUser.setState(info.getString("state"));
+        geoDialog.state_id = clientUser.getState().getInt("id");
+        geoDialog.country_id = clientUser.getCountry().getInt("id");
         //Run thread to change info on UI
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mEmail.setText(email);
-                try {
-                    mDisplayName.setText(user.getDisplayName());
-                    mAddress.setText(user.getAddress());
-                    mCity.setText(user.getCity());
-                    mState.setText(user.getState().getString("name"));
-                    mCountry.setText(user.getCountry().getString("name"));
-                    mZipCode.setText(user.getZipCode());
-                } catch (JSONException e) {
-                    Log.e(TAG, "Json parsing err: " + e.getMessage());
-                }
+        runOnUiThread(() -> {
+            mEmail.setText(email);
+            try {
+                mDisplayName.setText(clientUser.getDisplayName());
+                mAddress.setText(clientUser.getAddress());
+                mCity.setText(clientUser.getCity());
+                mState.setText(clientUser.getState().getString("name"));
+                mCountry.setText(clientUser.getCountry().getString("name"));
+                mZipCode.setText(clientUser.getZipCode());
+            } catch (JSONException e) {
+                Log.e(TAG, "Json parsing err: " + e.getMessage());
             }
         });
     }
@@ -314,23 +294,23 @@ public class Profile extends AppBarActivity implements View.OnClickListener,
             e.printStackTrace();
             Log.e(TAG,"IO ERROR");
         }
-        user.setDisplayName(mDisplayName.getText().toString());
-        user.setAddress(mAddress.getText().toString());
-        user.setCity(mCity.getText().toString());
-        user.setState(geoDialog.state_id,
+        clientUser.setDisplayName(mDisplayName.getText().toString());
+        clientUser.setAddress(mAddress.getText().toString());
+        clientUser.setCity(mCity.getText().toString());
+        clientUser.setState(geoDialog.state_id,
                 mState.getText().toString());
-        user.setCountry(geoDialog.country_id,
+        clientUser.setCountry(geoDialog.country_id,
                 mCountry.getText().toString());
-        user.setZipCode(mZipCode.getText().toString());
-        user.setEmail(Utils.getStringSharedPreferences(context,
+        clientUser.setZipCode(mZipCode.getText().toString());
+        clientUser.setEmail(Utils.getStringSharedPreferences(context,
                 context.getString(R.string.user_preference_email),
                 "",
                 context.getString(R.string.user_preference)));
         JSONObject body = new JSONObject();
-        body.put("info", user.toJSON());
+        body.put("info", clientUser.toJSON());
         Http2Request req = new Http2Request(context);
         req.put(getString(R.string.api_base_url), getString(R.string.api_user_update),
-                User.getToken(context), body.toString());
+                ClientUser.getToken(context), body.toString());
     }
 
     private void saveUserUiUpdate() {

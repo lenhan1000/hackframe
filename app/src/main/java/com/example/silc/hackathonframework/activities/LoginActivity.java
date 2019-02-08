@@ -1,7 +1,5 @@
 package com.example.silc.hackathonframework.activities;
 
-import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,16 +15,10 @@ import com.example.silc.hackathonframework.R;
 import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.helpers.Utils;
 import com.example.silc.hackathonframework.models.App;
-import com.example.silc.hackathonframework.models.User;
+import com.example.silc.hackathonframework.models.ClientUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener, Http2Request.Http2RequestListener{
     private static final String TAG = "Login";
@@ -137,7 +129,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
                 Log.d(TAG, res.getString("msg"));
             } else {
-                User.processLogin(email, res.getString("token"), this);
+                ClientUser.processLogin(email, res.getString("token"), this);
                 ((App) getApplication()).setDefaultPet();
                 Intent intent = new Intent(getApplicationContext(), Dashboard.class);
                 startActivity(intent);

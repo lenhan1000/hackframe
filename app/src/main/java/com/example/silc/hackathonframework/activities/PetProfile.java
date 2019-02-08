@@ -1,26 +1,18 @@
 package com.example.silc.hackathonframework.activities;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.aigestudio.wheelpicker.core.AbstractWheelPicker;
 import com.aigestudio.wheelpicker.view.WheelCurvedPicker;
@@ -29,8 +21,8 @@ import com.example.silc.hackathonframework.R;
 import com.example.silc.hackathonframework.databinding.ActivityPetProfileBinding;
 import com.example.silc.hackathonframework.helpers.Http2Request;
 import com.example.silc.hackathonframework.helpers.Utils;
+import com.example.silc.hackathonframework.models.ClientUser;
 import com.example.silc.hackathonframework.models.Pet;
-import com.example.silc.hackathonframework.models.User;
 import com.github.shchurov.horizontalwheelview.HorizontalWheelView;
 
 import org.joda.time.DateTime;
@@ -219,7 +211,7 @@ public class PetProfile extends AppBarActivity {
         body.put("petId", Pet.getSelectedId(this));
         Http2Request req = new Http2Request(this);
         req.put(req.baseUrl, getString(R.string.api_pet_update_info),
-                body.toString(), User.getToken(context));
+                body.toString(), ClientUser.getToken(context));
     }
 
     private boolean validate(){
